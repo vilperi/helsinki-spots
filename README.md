@@ -1,8 +1,8 @@
 # Helsinki-spots
 
-Tämä sovellus on web-karttapohjainen paikkatietosovellus, jossa käyttäjä pystyy lisäämään erilaisia kiinnostavia kohteita Helsingissä kartalle. Piste voi olla esimerkiksi nähtävyys, aktiviteetti, arkkitehtuurinen kohde, katutaideteos tai muu kaupunkikulttuurinen kohde. Muut käyttäjät voivat kommentoida muiden luomia kohteita antaen niistä omaan paikkallistuntemukseen perustuvia kommentteja.
+Tämä sovellus on web-karttapohjainen paikkatietosovellus, jossa käyttäjä pystyy lisäämään erilaisia kiinnostavia kohteita Helsingissä kartalle. Piste voi olla esimerkiksi nähtävyys, aktiviteetti, arkkitehtuurinen kohde, katutaideteos tai muu kaupunkikulttuurinen kohde. Käyttäjät voivat antaa kohteista lisätietoa kommentoiden sekä omia että muiden luomia kohteita antaen niistä omaan paikkallistuntemukseen perustuvia kommentteja.
 
-## Sovelluksen toiminnallisuudet
+## Sovelluksen toiminnot
 - Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen.
 - Käyttäjä pystyy lisäämään kartalle tietokohteita. Lisäksi käyttäjä pystyy muokkaamaan ja poistamaan lisäämiään tietokohteita.
   - Pistemäiset tietokohteet lisätään tietokantaan koordinaatteineen. 
