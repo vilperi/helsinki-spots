@@ -1,15 +1,35 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="fi">
 <head>
-  <title>Etusivu</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Helsinki Spots esimerkki">
+  <title>Helsinki Spots</title>
 </head>
-
 <body>
-  <h1>Etusivu</h1>
-  <p>
-    <b>Tervetuloa</b> <i>HelsinkiSpots -karttasovellukseen</i>!
-  </p>
-</body>
+  <header>
+    <h1>Helsinki Spots</h1>
+  </header>
 
+  <main>
+    <table>
+      <tr>
+        <td>
+          <iframe src="{{ url_for('static', filename='map.html') }}" title="Helsinki Spots" width="1000" height="800"></iframe>
+        </td>
+        <td>
+          <h2>Linkit</h2>
+          <ul>
+            <li><a href="/login">Kirjaudu sisään</a></li>
+            <!-- Lisää muita linkkejä tarvittaessa -->
+          </ul>
+        </td>
+      </tr>
+    </table>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Helsinki Spots</p>
+  </footer>
+</body>
 </html>

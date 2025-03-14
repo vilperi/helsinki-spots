@@ -4,9 +4,15 @@ from flask import redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import db
 import config
+import folium
+
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
+
+# Create a basemap into map.html file
+m = folium.Map(location=[60.1699, 24.9384], zoom_start=10)
+m.save('static/map.html')
 
 @app.route("/")
 def index():
