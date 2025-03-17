@@ -29,15 +29,24 @@
     }
 
     .top-links {
-      background: #eeeeee;
-      padding: 10px;
       display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-shrink: 0;
+      justify-content: space-between; /* Push left & right apart */
+      align-items: center;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px 20px;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      border-radius: 5px;
     }
 
-    .top-links a {
+    .left-links, .right-links {
+      display: flex;
+      gap: 15px; /* Space between links */
+    }
+
+    .left-links a, .right-links a {
       text-decoration: none;
       color: #000000;
       font-weight: bold;
@@ -71,15 +80,23 @@
   </header>
 
   <nav class="top-links">
-    {% if session.username %}
-    Kirjautunut nimellä {{ session.username }}
-    <a href="/logout">Kirjaudu ulos</a>
-    <a href="/add_point">Lisää kohde</a>
-    {% else %}
-    <a href="/login">Kirjaudu sisään</a>
-    <a href="/register">Rekisteröidy</a>
-    {% endif %}
+    <div class="left-links">
+      {% if session.username %}
+        <p>Kirjautunut nimellä {{ session.username }}</p>
+        <a href="/logout">Kirjaudu ulos</a>
+      {% else %}
+        <a href="/login">Kirjaudu sisään</a>
+        <a href="/register">Rekisteröidy</a>
+      {% endif %}
+    </div>
+  
+    <div class="right-links">
+      {% if session.username %}
+        <a href="/add">Lisää uusi kohde</a>
+      {% endif %}
+    </div>
   </nav>
+  
 
   <div class="map-container">
     <iframe src="/map" title="Helsinki Spots"></iframe>
