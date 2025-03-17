@@ -5,28 +5,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Helsinki Spots esimerkki">
   <title>Helsinki Spots</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden; /* Prevent scrolling */
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #9FC9EB;
+      color: rgb(0, 0, 0);
+      padding: 10px;
+      text-align: center;
+      flex-shrink: 0;
+      font-family: sans-serif
+    }
+
+    .top-links {
+      background: #eeeeee;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+    .top-links a {
+      text-decoration: none;
+      color: #000000;
+      font-weight: bold;
+    }
+
+    .map-container {
+      flex: 1; /* Take up all remaining space */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    footer {
+      background: #9FC9EB;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      flex-shrink: 0;
+    }
+  </style>
 </head>
 <body>
   <header>
     <h1>Helsinki Spots</h1>
   </header>
 
-  <main>
-    <table>
-      <tr>
-        <td>
-          <iframe src="{{ url_for('static', filename='map.html') }}" title="Helsinki Spots" width="1000" height="800"></iframe>
-        </td>
-        <td>
-          <h2>Linkit</h2>
-          <ul>
-            <li><a href="/login">Kirjaudu sisään</a></li>
-            <!-- Lisää muita linkkejä tarvittaessa -->
-          </ul>
-        </td>
-      </tr>
-    </table>
-  </main>
+  <nav class="top-links">
+    {% if session.username %}
+    Kirjautunut nimellä {{ session.username }}
+    <a href="/logout">Kirjaudu ulos</a>
+    <a href="/add_point">Lisää kohde</a>
+    {% else %}
+    <a href="/login">Kirjaudu sisään</a>
+    <a href="/register">Rekisteröidy</a>
+    {% endif %}
+  </nav>
+
+  <div class="map-container">
+    <iframe src="/map" title="Helsinki Spots"></iframe>
+  </div>
 
   <footer>
     <p>&copy; 2025 Helsinki Spots</p>
