@@ -4,35 +4,26 @@ from flask import redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import db
 import config
-import folium
 
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
-@app.route("/map")
-def map():
-    # Create a basemap into map.html file
-    m = folium.Map(location=[60.1699, 24.9384], zoom_start=10)
-
-    # Load existing points from database
-    ###points = db_module.get_all_points()  # Fetch stored points
-
-    # Add markers for stored points
-    ###for name, lat, lon in points:
-        ###folium.Marker([lat, lon], popup=name).add_to(m)
-
-    return m._repr_html_()
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
 @app.route("/register")
 def register():
     return render_template("register.html")
 
-@app.route("/create", methods=["POST"])
+@app.route("/add")
+def add():
+    return render_template("add_spot.html")
+
+@app.route("/create_user", methods=["POST"])
 def create():
     username = request.form["username"]
     password1 = request.form["password1"]
@@ -71,8 +62,36 @@ def login():
         else:
             return "VIRHE: väärä tunnus tai salasana"
 
+
 @app.route("/logout")
 def logout():
     del session["user_id"]
     del session["username"]
+    return redirect("/")
+
+
+@app.route("/add_spot", methods=["POST"])
+def add_spot():
+    # Get coordinates as float
+    lat = request.form["lat"]
+    lon = request.form["lon"]
+
+    name = request.form["name"]
+    category = request.form["category"]
+    comment = request.form["comment"]
+    user_id = int(session["user_id"])
+    
+    try:
+        sql = "INSERT INTO spots (name, lat, lon, category, user_id) VALUES (?, ?, ?, ?, ?)"
+        db.execute(sql, [name, lat, lon, category, user_id])
+    except sqlite3.IntegrityError:
+        return "VIRHE: Kohdetta ei voitu luoda"
+    
+    try:
+        spot_id = db.last_insert_id()
+        sql = "INSERT INTO comments (content, sent_at, user_id, spot_id) VALUES (?, datetime('now'), ?, ?)"
+        db.execute(sql, [comment, user_id, spot_id])
+    except sqlite3.IntegrityError:
+        return "VIRHE: Kommentin jättö ei onnistunut"
+
     return redirect("/")

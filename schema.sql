@@ -9,7 +9,7 @@ CREATE TABLE spots (
     name TEXT,
     lat REAL,
     lon REAL,
-    category TEXT
+    category TEXT,
     user_id INTEGER REFERENCES users
 );
 
