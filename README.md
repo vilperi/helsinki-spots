@@ -12,3 +12,7 @@ Tämä sovellus on tarkoitettu mielenkiintoisten kaupunkikohteiden listaamisen H
 - Sovelluksessa on käyttäjäsivut, jotka näyttävät jokaisesta käyttäjästä tilastoja ja käyttäjän lisäämät kohteet.
 - Käyttäjä pystyy valitsemaan lisäämälleen kohteelle yhden tai useamman luokittelun (esim. nähtävyys, aktiviteetti, arkkitehtuurinen kohde, katutaideteos).
 - Sekä omia että muiden tekemiä kohteita pystyy kommentoimaan.
+
+## Käyttöohjeet
+- Voit hakea koordinaatit kohteelle osoitteesta https://kartta.paikkatietoikkuna.fi/
+  - Klikkaa oikeassa laidassa *XY* -painiketta. Klikkaa sen jälkeen kohteesi sijainti kartalta ja kopioi koordinaatit lomakkeelle.   
