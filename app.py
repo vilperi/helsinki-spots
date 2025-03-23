@@ -13,7 +13,14 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    all_spots = spots.get_spots()
+
+    return render_template("index.html", spots=all_spots)
+
+@app.route("/spot/<int:spot_id>")
+def show_spot(spot_id):
+    spot = spots.get_spot(spot_id)
+    return render_template("/show_spot.html", spot=spot)
 
 
 @app.route("/register")

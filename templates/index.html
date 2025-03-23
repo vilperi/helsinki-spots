@@ -96,6 +96,18 @@
       {% endif %}
     </div>
   </nav>
+
+  <h2>Kohteet</h2>
+
+  <div class="spots_container">
+
+    <ul>
+      {% for spot in spots %}
+      <li><a href="/spot/{{ spot.id }}">{{ spot.name }}</a></li>
+      {% endfor %}
+    </ul>
+
+  </div>
   
   <footer>
     <p>&copy; 2025 Helsinki Spots</p>

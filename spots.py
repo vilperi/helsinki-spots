@@ -17,3 +17,20 @@ def add_spot(name, lat, lon, category, user_id, comment):
         return "VIRHE: Kommentin jättö ei onnistunut"
     
     
+def get_spots():
+    sql = "SELECT id, name FROM spots ORDER BY id DESC"
+
+    return db.query(sql)
+
+
+def get_spot(spot_id):
+    sql = """SELECT s.name, 
+                    s.lat, 
+                    s.lon, 
+                    s.category,
+                    u.username
+            FROM spots s, users u
+            WHERE s.user_id = u.id AND
+                  s.id = ?"""
+    
+    return db.query(sql, [spot_id])[0]
