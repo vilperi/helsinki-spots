@@ -4,6 +4,7 @@ from flask import redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import db
 import config
+import spots
 
 
 app = Flask(__name__)
@@ -81,17 +82,6 @@ def add_spot():
     comment = request.form["comment"]
     user_id = int(session["user_id"])
     
-    try:
-        sql = "INSERT INTO spots (name, lat, lon, category, user_id) VALUES (?, ?, ?, ?, ?)"
-        db.execute(sql, [name, lat, lon, category, user_id])
-    except sqlite3.IntegrityError:
-        return "VIRHE: Kohdetta ei voitu luoda"
-    
-    try:
-        spot_id = db.last_insert_id()
-        sql = "INSERT INTO comments (content, sent_at, user_id, spot_id) VALUES (?, datetime('now'), ?, ?)"
-        db.execute(sql, [comment, user_id, spot_id])
-    except sqlite3.IntegrityError:
-        return "VIRHE: Kommentin jättö ei onnistunut"
+    spots.add_spot(name, lat, lon, category, user_id, comment)
 
     return redirect("/")
