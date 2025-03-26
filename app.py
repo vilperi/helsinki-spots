@@ -22,14 +22,59 @@ def show_spot(spot_id):
     spot = spots.get_spot(spot_id)
     return render_template("/show_spot.html", spot=spot)
 
+@app.route("/add")
+def add():
+    return render_template("add_spot.html")
+
+@app.route("/add_spot", methods=["POST"])
+def add_spot():
+    # Get coordinates as float
+    lat = request.form["lat"]
+    lon = request.form["lon"]
+
+    name = request.form["name"]
+    category = request.form["category"]
+    comment = request.form["comment"]
+    user_id = int(session["user_id"])
+
+    spots.add_spot(name, lat, lon, category, user_id, comment)
+
+    return redirect("/")
+
+@app.route("/edit_spot/<int:spot_id>")
+def edit_spot(spot_id):
+    spot = spots.get_spot(spot_id)
+    return render_template("edit_spot.html", spot=spot)
+
+@app.route("/update_spot", methods=["POST"])
+def update_spot():
+    # Get coordinates as float
+    lat = request.form["lat"]
+    lon = request.form["lon"]
+
+    name = request.form["name"]
+    category = request.form["category"]
+    spot_id = request.form["spot_id"]
+
+    spots.update_spot(spot_id, name, lat, lon, category)
+
+    return redirect("/spot/" + str(spot_id))
+
+@app.route("/remove_spot/<int:spot_id>", methods=["GET", "POST"])
+def remove_spot(spot_id):
+    if request.method == "GET":
+        spot = spots.get_spot(spot_id)
+        return render_template("remove_spot.html", spot=spot)
+
+    if request.method == "POST":
+        if "remove" in request.form:
+            spots.remove_spot(spot_id)
+            return redirect("/")
+        return redirect("/spot/" + str(spot_id))
 
 @app.route("/register")
 def register():
     return render_template("register.html")
-
-@app.route("/add")
-def add():
-    return render_template("add_spot.html")
 
 @app.route("/create_user", methods=["POST"])
 def create():
@@ -47,7 +92,6 @@ def create():
         return "VIRHE: tunnus on jo varattu"
 
     return "Tunnus luotu"
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -70,25 +114,8 @@ def login():
         else:
             return "VIRHE: väärä tunnus tai salasana"
 
-
 @app.route("/logout")
 def logout():
     del session["user_id"]
     del session["username"]
-    return redirect("/")
-
-
-@app.route("/add_spot", methods=["POST"])
-def add_spot():
-    # Get coordinates as float
-    lat = request.form["lat"]
-    lon = request.form["lon"]
-
-    name = request.form["name"]
-    category = request.form["category"]
-    comment = request.form["comment"]
-    user_id = int(session["user_id"])
-    
-    spots.add_spot(name, lat, lon, category, user_id, comment)
-
     return redirect("/")

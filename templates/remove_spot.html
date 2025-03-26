@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Kohteen poisto</title>
+</head>
+
+<body>
+  <form action="/remove_spot/{{ spot.id }}" method="post">
+    <p>
+      Haluatko varmasti poistaa kohteen <b>{{spot.name}} </b>? 
+    </p>
+    <input type="submit" name="remove" value="Poista" />
+    <input type="submit" name="cancel" value="Peruuta" />
+  </form>
+</body>
+
+</html>

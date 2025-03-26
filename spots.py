@@ -24,13 +24,27 @@ def get_spots():
 
 
 def get_spot(spot_id):
-    sql = """SELECT s.name, 
-                    s.lat, 
-                    s.lon, 
+    sql = """SELECT s.id,
+                    s.name,
+                    s.lat,
+                    s.lon,
                     s.category,
+                    u.id user_id,
                     u.username
             FROM spots s, users u
             WHERE s.user_id = u.id AND
                   s.id = ?"""
     
     return db.query(sql, [spot_id])[0]
+
+def update_spot(spot_id, name, lat, lon, category):
+    sql = """UPDATE spots SET name = ?,
+                              lat = ?,
+                              lon = ?,
+                              category = ?
+                          WHERE id = ?"""
+    db.execute(sql, [name, lat, lon, category, spot_id])
+
+def remove_spot(spot_id):
+    sql = "DELETE FROM spots WHERE id = ?"
+    db.execute(sql, [spot_id])

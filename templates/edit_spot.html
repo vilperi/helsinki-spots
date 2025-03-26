@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Muokkaa kohdetta</title>
+</head>
+
+<body>
+  <form action="/update_spot" method="post">
+    <p>
+      Kohteen nimi: <br />
+      <input type="text" name="name" value="{{ spot.name }}"/>
+    </p>
+    <p>
+      Koordinaatit (ETRS-TM35FIN): <br />
+      <input type="text" name="lat" value="{{ spot.lat }}"/> N
+      <br><br>
+      <input type="text" name="lon" value="{{ spot.lon }}"/> E
+    </p>
+    <p>
+      Kategoria: <br />
+      <input type="text" name="category" value="{{ spot.category}}"/>
+    </p>
+    <input type="hidden" name="spot_id" value="{{ spot.id }}" />
+    <input type="submit" value="Muokkaa kohdetta" />
+  </form>
+</body>
+
+</html>

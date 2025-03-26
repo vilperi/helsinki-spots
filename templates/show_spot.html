@@ -7,6 +7,12 @@
  
  <body>
    <h1>{{ spot.name }}</h1>
+   {% if session.user_id == spot.user_id %}
+    <p>
+      <a href="/edit_spot/{{ spot.id }}">Muokkaa</a>
+      <a href="/remove_spot/{{ spot.id }}">Poista</a>
+    </p>
+    {% endif %}
    <p>
      Koordinaatit: 
      {{ spot.lat }} N {{ spot.lon}} E
