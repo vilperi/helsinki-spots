@@ -28,8 +28,8 @@ def get_spot(spot_id):
             FROM spots s, users u
             WHERE s.user_id = u.id AND
                   s.id = ?"""
-    
-    return db.query(sql, [spot_id])[0]
+    result = db.query(sql, [spot_id])
+    return result[0] if result else None
 
 
 def find_spots(keyword):
@@ -74,7 +74,8 @@ def get_comment(comment_id):
     sql = """SELECT c.id, c.content, c.sent_at, c.user_id, c.spot_id, u.username
              FROM comments c, users u
              WHERE c.user_id = u.id AND c.id = ?"""
-    return db.query(sql, [comment_id])[0]
+    result = db.query(sql, [comment_id])
+    return result[0] if result else None
 
 
 def edit_comment(comment_id, content):

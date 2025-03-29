@@ -31,6 +31,8 @@ def find_spot():
 @app.route("/spot/<int:spot_id>")
 def show_spot(spot_id):
     spot = spots.get_spot(spot_id)
+    if not spot:
+        abort(404)
     comments = spots.get_comments(spot_id)
     return render_template("/show_spot.html", spot=spot, comments=comments)
 
@@ -54,6 +56,8 @@ def add_spot():
 @app.route("/edit_spot/<int:spot_id>")
 def edit_spot(spot_id):
     spot = spots.get_spot(spot_id)
+    if not spot:
+        abort(404)
     if spot["user_id"] != session["user_id"]:
         abort(403)
     return render_template("edit_spot.html", spot=spot)
@@ -62,7 +66,8 @@ def edit_spot(spot_id):
 def update_spot():
     spot_id = request.form["spot_id"]
     spot = spots.get_spot(spot_id)
-
+    if not spot:
+        abort(404)
     if spot["user_id"] != session["user_id"]:
         abort(403)
 
@@ -79,9 +84,11 @@ def update_spot():
 @app.route("/remove_spot/<int:spot_id>", methods=["GET", "POST"])
 def remove_spot(spot_id):
     spot = spots.get_spot(spot_id)
-
+    if not spot:
+        abort(404)
     if spot["user_id"] != session["user_id"]:
         abort(403)
+
     if request.method == "GET":
         return render_template("remove_spot.html", spot=spot)
 
@@ -105,6 +112,8 @@ def add_comment():
 @app.route("/edit_comment/<int:comment_id>", methods=["GET", "POST"])
 def edit_comment(comment_id):
     comment = spots.get_comment(comment_id)
+    if not comment:
+        abort(404)
     spot_id = comment["spot_id"]
     if comment["user_id"] != session["user_id"]:
         abort(403)
@@ -119,6 +128,8 @@ def edit_comment(comment_id):
 @app.route("/remove_comment/<int:comment_id>", methods=["GET", "POST"])
 def remove_comment(comment_id):
     comment = spots.get_comment(comment_id)
+    if not comment:
+        abort(404)
     spot_id = comment["spot_id"]
 
     if comment["user_id"] != session["user_id"]:
