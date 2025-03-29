@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Helsinki Spots esimerkki">
+  <meta name="description" content="HelsinkiSpots">
   <title>Helsinki Spots</title>
   <style>
     * {
@@ -14,7 +14,7 @@
 
     html, body {
       height: 100%;
-      overflow: hidden; /* Prevent scrolling */
+      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
@@ -52,28 +52,42 @@
       font-weight: bold;
     }
 
-    .spots_container {
-      flex: 1; /* Take up all remaining space */
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    h2 {
+      margin: 20px;
+      font-size: 24px;
     }
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
+    ul {
+      list-style-type: none;
+      margin: 20px;
+      padding: 0;
     }
 
-    footer {
-      background: #9FC9EB;
-      color: white;
-      text-align: center;
-      padding: 10px;
-      flex-shrink: 0;
+    li {
+      margin-bottom: 10px;
     }
+
+    a {
+      text-decoration: none;
+      color: blue;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:visited {
+      color: purple;
+    }
+
+    .top-links a:visited {
+      color: #000000; /* Keeps the color black for top links */
+    }
+
   </style>
 </head>
+
 <body>
   <header>
     <h1>Helsinki Spots</h1>
@@ -91,6 +105,7 @@
     </div>
   
     <div class="right-links">
+      <a href="/find_spot">Hae kohteita</a>
       {% if session.username %}
         <a href="/add">Lisää uusi kohde</a>
       {% endif %}
@@ -99,18 +114,11 @@
 
   <h2>Kohteet</h2>
 
-  <div class="spots_container">
+  <ul>
+    {% for spot in spots %}
+    <li><a href="/spot/{{ spot.id }}">{{ spot.name }}</a></li>
+    {% endfor %}
+  </ul>
 
-    <ul>
-      {% for spot in spots %}
-      <li><a href="/spot/{{ spot.id }}">{{ spot.name }}</a></li>
-      {% endfor %}
-    </ul>
-
-  </div>
-  
-  <footer>
-    <p>&copy; 2025 Helsinki Spots</p>
-  </footer>
 </body>
 </html>
