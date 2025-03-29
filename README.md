@@ -12,8 +12,8 @@ Kohdat, joita ei vielä sovelluksesta löydy ovat ~~yliviivattu~~
 - Käyttäjä pystyy selaamaan kohteita. Käyttäjä näkee sekä itse lisäämänsä että muiden käyttäjien lisäämät kohteet.
 - Käyttäjä pystyy etsimään tietokohteita hakusanalla. Käyttäjä pystyy hakemaan sekä itse lisäämiään että muiden käyttäjien lisäämiä kohteita.
 - ~~Sovelluksessa on käyttäjäsivut, jotka näyttävät jokaisesta käyttäjästä tilastoja ja käyttäjän lisäämät kohteet.~~
-- Käyttäjä pystyy valitsemaan lisäämälleen kohteelle yhden tai useamman luokittelun (esim. nähtävyys, aktiviteetti, arkkitehtuurinen kohde, katutaideteos).
-- ~~Sekä omia että muiden tekemiä kohteita pystyy kommentoimaan.~~
+- Käyttäjä pystyy valitsemaan lisäämälleen kohteelle yhden luokittelun (esim. nähtävyys, aktiviteetti, arkkitehtuurinen kohde, katutaideteos).
+- Sekä omia että muiden tekemiä kohteita pystyy kommentoimaan.
 
 ## Sovelluksen asennus
 
