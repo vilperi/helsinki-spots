@@ -38,16 +38,14 @@ def add():
 
 @app.route("/add_spot", methods=["POST"])
 def add_spot():
-    # Get coordinates as float
     lat = request.form["lat"]
     lon = request.form["lon"]
-
     name = request.form["name"]
+    description = request.form["description"]
     category = request.form["category"]
-    comment = request.form["comment"]
     user_id = int(session["user_id"])
 
-    spots.add_spot(name, lat, lon, category, user_id, comment)
+    spots.add_spot(name, lat, lon, description, category, user_id)
 
     return redirect("/")
 
@@ -61,12 +59,12 @@ def update_spot():
     # Get coordinates as float
     lat = request.form["lat"]
     lon = request.form["lon"]
-
     name = request.form["name"]
+    description = request.form["description"]
     category = request.form["category"]
     spot_id = request.form["spot_id"]
 
-    spots.update_spot(spot_id, name, lat, lon, category)
+    spots.update_spot(spot_id, name, lat, lon, description, category)
 
     return redirect("/spot/" + str(spot_id))
 

@@ -9,9 +9,10 @@ CREATE TABLE spots (
     name TEXT,
     lat REAL,
     lon REAL,
+    description TEXT,
     category TEXT,
     user_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE comments (

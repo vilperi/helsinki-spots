@@ -8,22 +8,22 @@
 <body>
   <form action="/add_spot" method="post">
     <p>
+      Kohteen nimi: <br />
+      <input type="text" name="name" />
+    </p>
+    <p>
       Koordinaatit (ETRS-TM35FIN): <br />
       <input type="text" name="lat"/> N
       <br><br>
       <input type="text" name="lon"/> E
     </p>
     <p>
-      Kohteen nimi: <br />
-      <input type="text" name="name" />
+      <label for="description">Kuvaus:</label> <br />
+      <textarea id="description" name="description" rows="8" cols="60" maxlength="1000"></textarea>
     </p>
     <p>
       Kategoria: <br />
       <input type="text" name="category" />
-    </p>
-    <p>
-      Kommentti: <br />
-      <input type="text" name="comment" />
     </p>
     <input type="submit" value="Lisää kohde" />
   </form>

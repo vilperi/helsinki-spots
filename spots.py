@@ -1,22 +1,15 @@
 import sqlite3
 import db
 
-def add_spot(name, lat, lon, category, user_id, comment):
+def add_spot(name, lat, lon, description, category, user_id):
 
     try:
-        sql = "INSERT INTO spots (name, lat, lon, category, user_id) VALUES (?, ?, ?, ?, ?)"
-        db.execute(sql, [name, lat, lon, category, user_id])
+        sql = "INSERT INTO spots (name, lat, lon, description, category, user_id) VALUES (?, ?, ?, ?, ?, ?)"
+        db.execute(sql, [name, lat, lon, description, category, user_id])
     except sqlite3.IntegrityError:
         return "VIRHE: Kohdetta ei voitu luoda"
-    
-    try:
-        spot_id = db.last_insert_id()
-        sql = "INSERT INTO comments (content, sent_at, user_id, spot_id) VALUES (?, datetime('now'), ?, ?)"
-        db.execute(sql, [comment, user_id, spot_id])
-    except sqlite3.IntegrityError:
-        return "VIRHE: Kommentin jättö ei onnistunut"
-    
-    
+
+
 def get_spots():
     sql = "SELECT id, name FROM spots ORDER BY id DESC"
 
@@ -28,6 +21,7 @@ def get_spot(spot_id):
                     s.name,
                     s.lat,
                     s.lon,
+                    s.description,
                     s.category,
                     u.id user_id,
                     u.username
@@ -46,13 +40,14 @@ def find_spots(keyword):
     like = "%" + keyword + "%"
     return db.query(sql, [like])
 
-def update_spot(spot_id, name, lat, lon, category):
+def update_spot(spot_id, name, lat, description, lon, category):
     sql = """UPDATE spots SET name = ?,
                               lat = ?,
                               lon = ?,
+                              description = ?,
                               category = ?
                           WHERE id = ?"""
-    db.execute(sql, [name, lat, lon, category, spot_id])
+    db.execute(sql, [name, lat, lon, description, category, spot_id])
 
 def remove_spot(spot_id):
     sql = "DELETE FROM spots WHERE id = ?"
