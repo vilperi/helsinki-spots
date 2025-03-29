@@ -15,6 +15,26 @@ Kohdat, joita ei vielä sovelluksesta löydy ovat ~~yliviivattu~~
 - Käyttäjä pystyy valitsemaan lisäämälleen kohteelle yhden tai useamman luokittelun (esim. nähtävyys, aktiviteetti, arkkitehtuurinen kohde, katutaideteos).
 - ~~Sekä omia että muiden tekemiä kohteita pystyy kommentoimaan.~~
 
+## Sovelluksen asennus
+
+Asenna `flask`-kirjasto:
+
+```
+$ pip install flask
+```
+
+Luo tietokannan taulut:
+
+```
+$ sqlite3 database.db < schema.sql
+```
+
+Voit käynnistää sovelluksen näin:
+
+```
+$ flask run
+```
+
 ## Käyttöohjeet
 - Voit hakea koordinaatit kohteelle osoitteesta https://kartta.paikkatietoikkuna.fi/
-  - Klikkaa oikeassa laidassa *XY* -painiketta. Klikkaa sen jälkeen kohteesi sijainti kartalta ja kopioi koordinaatit lomakkeelle.   
+  - Klikkaa oikeassa laidassa *XY* -painiketta. Klikkaa sen jälkeen kohteesi sijainti kartalta ja kopioi koordinaatit lomakkeelle.
