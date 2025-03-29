@@ -31,6 +31,43 @@
   <p>
     <a href="/">Takaisin</a>
   </p>
+
+  <hr />
+  <p>
+    <h2>Kommentit</h2>
+  </p>
+  {% for comment in comments %}
+  <p>
+    <b>{{ comment.username }}</b> ({{ comment.sent_at }}):
+  </p>
+  <p>
+    {{ comment.content }}
+  </p>
+  {% if comment.user_id == session.user_id %}
+  <p>
+    <a href="/edit/{{ comment.id }}">Muokkaa</a> |
+    <a href="/remove/{{ comment.id }}">Poista</a>
+  </p>
+  {% endif %}
+  <hr />
+  {% endfor %}
+
+  {% if session.user_id %}
+  <h3>Uusi kommentti</h3>
+
+  <form action="/add_comment" method="post">
+    <p>
+      Kommentti:<br />
+      <textarea name="content" rows="5" cols="40"></textarea>
+    </p>
+    <input type="hidden" name="spot_id" value="{{ spot.id }}" />
+    <input type="submit" value="Lähetä" />
+  </form>
+  <hr />
+  {% endif %}
+  <p>
+    <a href="/">Takaisin</a>
+  </p>
 </body>
 
 </html>

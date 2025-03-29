@@ -30,7 +30,8 @@ def find_spot():
 @app.route("/spot/<int:spot_id>")
 def show_spot(spot_id):
     spot = spots.get_spot(spot_id)
-    return render_template("/show_spot.html", spot=spot)
+    comments = spots.get_comments(spot_id)
+    return render_template("/show_spot.html", spot=spot, comments=comments)
 
 @app.route("/add")
 def add():
@@ -79,6 +80,15 @@ def remove_spot(spot_id):
             spots.remove_spot(spot_id)
             return redirect("/")
         return redirect("/spot/" + str(spot_id))
+
+@app.route("/add_comment", methods=["POST"])
+def add_comment():
+    content = request.form["content"]
+    user_id = session["user_id"]
+    spot_id = request.form["spot_id"]
+    spots.add_comment(content, user_id, spot_id)
+    return redirect("/spot/" + str(spot_id))
+
 
 @app.route("/register")
 def register():
