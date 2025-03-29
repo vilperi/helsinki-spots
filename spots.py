@@ -41,7 +41,7 @@ def find_spots(keyword):
     return db.query(sql, [like])
 
 
-def update_spot(spot_id, name, lat, description, lon, category):
+def update_spot(spot_id, name, lat, lon, description, category):
     sql = """UPDATE spots SET name = ?,
                               lat = ?,
                               lon = ?,
@@ -61,9 +61,29 @@ def add_comment(content, user_id, spot_id):
              VALUES (?, datetime('now', 'localtime'), ?, ?)"""
     db.execute(sql, [content, user_id, spot_id])
 
+
 def get_comments(spot_id):
     sql = """SELECT c.id, c.content, c.sent_at, c.user_id, u.username
             FROM comments c, users u
             WHERE c.user_id = u.id AND c.spot_id = ?
             ORDER BY c.id DESC"""
     return db.query(sql, [spot_id])
+
+
+def get_comment(comment_id):
+    sql = """SELECT c.id, c.content, c.sent_at, c.user_id, c.spot_id, u.username
+             FROM comments c, users u
+             WHERE c.user_id = u.id AND c.id = ?"""
+    return db.query(sql, [comment_id])[0]
+
+
+def edit_comment(comment_id, content):
+    sql = """UPDATE comments 
+             SET content = ?, sent_at = datetime('now', 'localtime')
+             WHERE id = ?"""
+    db.execute(sql, [content, comment_id])
+
+
+def remove_comment(comment_id):
+    sql = "DELETE FROM comments WHERE id = ?"
+    db.execute(sql, [comment_id])

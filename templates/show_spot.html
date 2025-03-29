@@ -45,8 +45,8 @@
   </p>
   {% if comment.user_id == session.user_id %}
   <p>
-    <a href="/edit/{{ comment.id }}">Muokkaa</a> |
-    <a href="/remove/{{ comment.id }}">Poista</a>
+    <a href="/edit_comment/{{ comment.id }}">Muokkaa</a> |
+    <a href="/remove_comment/{{ comment.id }}">Poista</a>
   </p>
   {% endif %}
   <hr />
