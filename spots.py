@@ -37,6 +37,15 @@ def get_spot(spot_id):
     
     return db.query(sql, [spot_id])[0]
 
+
+def find_spots(keyword):
+    sql = """SELECT id, name 
+             FROM spots
+             WHERE name LIKE ?
+             ORDER BY id DESC"""
+    like = "%" + keyword + "%"
+    return db.query(sql, [like])
+
 def update_spot(spot_id, name, lat, lon, category):
     sql = """UPDATE spots SET name = ?,
                               lat = ?,

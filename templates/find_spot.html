@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Etsi kohde</title>
+</head>
+
+<body>
+  <h1>Etsi kohde</h1>
+  <form action="find_spot" , method="get">
+    <p>
+      Hakusana: <input type="text" value="{{ query }}" name="query">
+    </p>
+    <input type="submit" value="Lähetä">
+  </form>
+
+  {% if query %}
+  <h2>Tulokset</h2>
+
+  <ul>
+  {% for spot in results %}
+    <li><a href="/spot/{{ spot.id }}">{{ spot.name }}</a></li>
+  {% endfor %}
+  </ul>
+  
+  {% endif %}
+</body>
+
+</html>

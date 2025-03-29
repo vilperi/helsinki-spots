@@ -17,6 +17,16 @@ def index():
 
     return render_template("index.html", spots=all_spots)
 
+@app.route("/find_spot")
+def find_spot():
+    query = request.args.get("query")
+    if query:
+        results = spots.find_spots(query)
+    else:
+        query = ""
+        results = []
+    return render_template("find_spot.html", query=query, results=results)
+
 @app.route("/spot/<int:spot_id>")
 def show_spot(spot_id):
     spot = spots.get_spot(spot_id)
