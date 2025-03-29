@@ -1,7 +1,8 @@
 import sqlite3
-from flask import Flask
-from flask import redirect, render_template, request, session
+
+from flask import Flask, abort, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
+
 import db
 import config
 import spots
@@ -53,17 +54,23 @@ def add_spot():
 @app.route("/edit_spot/<int:spot_id>")
 def edit_spot(spot_id):
     spot = spots.get_spot(spot_id)
+    if spot["user_id"] != session["user_id"]:
+        abort(403)
     return render_template("edit_spot.html", spot=spot)
 
 @app.route("/update_spot", methods=["POST"])
 def update_spot():
-    # Get coordinates as float
+    spot_id = request.form["spot_id"]
+    spot = spots.get_spot(spot_id)
+
+    if spot["user_id"] != session["user_id"]:
+        abort(403)
+
     lat = request.form["lat"]
     lon = request.form["lon"]
     name = request.form["name"]
     description = request.form["description"]
     category = request.form["category"]
-    spot_id = request.form["spot_id"]
 
     spots.update_spot(spot_id, name, lat, lon, description, category)
 
@@ -71,8 +78,11 @@ def update_spot():
 
 @app.route("/remove_spot/<int:spot_id>", methods=["GET", "POST"])
 def remove_spot(spot_id):
+    spot = spots.get_spot(spot_id)
+
+    if spot["user_id"] != session["user_id"]:
+        abort(403)
     if request.method == "GET":
-        spot = spots.get_spot(spot_id)
         return render_template("remove_spot.html", spot=spot)
 
     if request.method == "POST":
@@ -83,12 +93,44 @@ def remove_spot(spot_id):
 
 @app.route("/add_comment", methods=["POST"])
 def add_comment():
+    if not session["user_id"]:
+        abort(403)
+
     content = request.form["content"]
     user_id = session["user_id"]
     spot_id = request.form["spot_id"]
     spots.add_comment(content, user_id, spot_id)
     return redirect("/spot/" + str(spot_id))
 
+@app.route("/edit_comment/<int:comment_id>", methods=["GET", "POST"])
+def edit_comment(comment_id):
+    comment = spots.get_comment(comment_id)
+    spot_id = comment["spot_id"]
+    if comment["user_id"] != session["user_id"]:
+        abort(403)
+    if request.method == "GET":
+        return render_template("edit_comment.html", comment=comment)
+    if request.method == "POST":
+        if "edit" in request.form:
+            content = request.form["content"]
+            spots.edit_comment(comment_id, content)
+        return redirect("/spot/" + str(spot_id))
+
+@app.route("/remove_comment/<int:comment_id>", methods=["GET", "POST"])
+def remove_comment(comment_id):
+    comment = spots.get_comment(comment_id)
+    spot_id = comment["spot_id"]
+
+    if comment["user_id"] != session["user_id"]:
+        abort(403)
+
+    if request.method == "GET":
+        return render_template("remove_comment.html", comment=comment)
+
+    if request.method == "POST":
+        if "remove" in request.form:
+            spots.remove_comment(comment_id)
+        return redirect("/spot/" + str(spot_id))
 
 @app.route("/register")
 def register():
@@ -115,7 +157,7 @@ def create():
 def login():
     if request.method == "GET":
         return render_template("login.html")
-    
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
