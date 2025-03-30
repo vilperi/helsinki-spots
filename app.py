@@ -11,6 +11,9 @@ import spots
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+def require_login():
+    if "user_id" not in session:
+        abort(403)
 
 @app.route("/")
 def index():
@@ -36,12 +39,15 @@ def show_spot(spot_id):
     comments = spots.get_comments(spot_id)
     return render_template("/show_spot.html", spot=spot, comments=comments)
 
-@app.route("/add")
-def add():
+@app.route("/add_spot")
+def add_spot():
+    require_login()
     return render_template("add_spot.html")
 
-@app.route("/add_spot", methods=["POST"])
-def add_spot():
+@app.route("/create_spot", methods=["POST"])
+def create_spot():
+    require_login()
+
     lat = request.form["lat"]
     lon = request.form["lon"]
     name = request.form["name"]
@@ -55,6 +61,7 @@ def add_spot():
 
 @app.route("/edit_spot/<int:spot_id>")
 def edit_spot(spot_id):
+    require_login()
     spot = spots.get_spot(spot_id)
     if not spot:
         abort(404)
@@ -64,6 +71,7 @@ def edit_spot(spot_id):
 
 @app.route("/update_spot", methods=["POST"])
 def update_spot():
+    require_login()
     spot_id = request.form["spot_id"]
     spot = spots.get_spot(spot_id)
     if not spot:
@@ -83,6 +91,7 @@ def update_spot():
 
 @app.route("/remove_spot/<int:spot_id>", methods=["GET", "POST"])
 def remove_spot(spot_id):
+    require_login()
     spot = spots.get_spot(spot_id)
     if not spot:
         abort(404)
@@ -100,17 +109,24 @@ def remove_spot(spot_id):
 
 @app.route("/add_comment", methods=["POST"])
 def add_comment():
-    if not session["user_id"]:
-        abort(403)
+    require_login()
+    spot_id = request.form["spot_id"]
+    spot = spots.get_spot(spot_id)
+    if not spot:
+        abort(404)
 
     content = request.form["content"]
     user_id = session["user_id"]
-    spot_id = request.form["spot_id"]
+
     spots.add_comment(content, user_id, spot_id)
+
+
     return redirect("/spot/" + str(spot_id))
 
 @app.route("/edit_comment/<int:comment_id>", methods=["GET", "POST"])
 def edit_comment(comment_id):
+    require_login()
+
     comment = spots.get_comment(comment_id)
     if not comment:
         abort(404)
@@ -127,6 +143,8 @@ def edit_comment(comment_id):
 
 @app.route("/remove_comment/<int:comment_id>", methods=["GET", "POST"])
 def remove_comment(comment_id):
+    require_login()
+
     comment = spots.get_comment(comment_id)
     if not comment:
         abort(404)
@@ -187,6 +205,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["user_id"]
-    del session["username"]
+    if "user_id" in session:
+        del session["user_id"]
+        del session["username"]
     return redirect("/")
