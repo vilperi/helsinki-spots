@@ -16,7 +16,7 @@
   <form action="/edit_comment/{{ comment.id }}" method="post">
     <p>
       Kommentti:<br />
-      <textarea name="content" rows="5" cols="40">{{ comment.content }}</textarea>
+      <textarea name="content" rows="5" cols="40" maxlength="500">{{ comment.content }}</textarea>
     </p>
     <input type="submit" name="cancel" value="Peruuta" />
     <input type="submit" name="edit" value="Muokkaa" />

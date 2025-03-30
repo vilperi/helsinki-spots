@@ -31,14 +31,29 @@ def get_spot(spot_id):
     result = db.query(sql, [spot_id])
     return result[0] if result else None
 
+def filter_spots(category):
+    sql = "SELECT id, name FROM spots WHERE category = ? ORDER BY id DESC"
+    return db.query(sql, [category])
 
-def find_spots(keyword):
-    sql = """SELECT id, name 
-             FROM spots
-             WHERE name LIKE ?
-             ORDER BY id DESC"""
+def find_spots(keyword, category):
+    if not keyword:
+        if category == "all":
+            return get_spots()
+        else:
+            return filter_spots(category)
     like = "%" + keyword + "%"
-    return db.query(sql, [like])
+    if category == "all":
+        sql = """SELECT id, name
+                FROM spots 
+                WHERE name LIKE ?
+                ORDER BY id DESC"""
+        return db.query(sql, [like])
+    else:
+        sql = """SELECT id, name
+                FROM spots
+                WHERE name LIKE ? AND category = ?
+                ORDER BY id DESC"""
+        return db.query(sql, [like, category])
 
 
 def update_spot(spot_id, name, lat, lon, description, category):

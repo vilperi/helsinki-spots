@@ -58,7 +58,7 @@
   <form action="/add_comment" method="post">
     <p>
       Kommentti:<br />
-      <textarea name="content" rows="5" cols="40"></textarea>
+      <textarea name="content" rows="5" cols="40" maxlength="500"></textarea>
     </p>
     <input type="hidden" name="spot_id" value="{{ spot.id }}" />
     <input type="submit" value="Lähetä" />

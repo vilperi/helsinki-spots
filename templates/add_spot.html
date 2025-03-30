@@ -9,22 +9,37 @@
   <form action="/create_spot" method="post">
     <p>
       Kohteen nimi: <br />
-      <input type="text" name="name" />
+      <input type="text" name="name" maxlength="50" />
     </p>
     <p>
       Koordinaatit (ETRS-TM35FIN): <br />
-      <input type="text" name="lat"/> N
+      <input type="text" name="lat" maxlength="12"/> N
       <br><br>
-      <input type="text" name="lon"/> E
+      <input type="text" name="lon" maxlength="12"/> E
     </p>
     <p>
       <label for="description">Kuvaus:</label> <br />
       <textarea id="description" name="description" rows="8" cols="60" maxlength="1000"></textarea>
     </p>
-    <p>
-      Kategoria: <br />
-      <input type="text" name="category" />
-    </p>
+    <label for="category">Kategoria:</label>
+    <select id="category" name="category">
+      <option value="" disabled selected hidden>Valitse kategoria</option>
+      <option value="Arkkitehtuuri & Rakennustaide">Arkkitehtuuri & Rakennustaide</option>
+      <option value="Baarit & Klubit">Baarit & Klubit</option>
+      <option value="Elävän musiikin paikat">Elävän musiikin paikat</option>
+      <option value="Historialliset kohteet">Historialliset kohteet</option>
+      <option value="Hylätyt paikat">Hylätyt paikat</option>
+      <option value="Kahvilat & Pienpaahtimot">Kahvilat & Pienpaahtimot</option>
+      <option value="Katutaide & Graffiti">Katutaide & Graffiti</option>
+      <option value="Kirppikset">Kirppikset</option>
+      <option value="Kollektiivit & Yhteisöt">Kollektiivit & Yhteisöt</option>
+      <option value="Paikka hyvällä näkymällä">Paikka hyvällä näkymällä</option>
+      <option value="Puistot & Hengailupaikat">Puistot & Hengailupaikat</option>
+      <option value="Salaiset & Piilotetut Paikat">Salaiset & Piilotetut Paikat</option>
+      <option value="Skeittauspaikat">Skeittauspaikat</option>
+      <option value="Tapahtumat">Tapahtumat</option>
+      <option value="Muut">Muut</option>
+    </select>
     <input type="submit" value="Lisää kohde" />
   </form>
 </body>

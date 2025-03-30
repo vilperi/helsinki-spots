@@ -11,6 +11,24 @@ import spots
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+categories = [
+"Arkkitehtuuri & Rakennustaide",
+"Baarit & Klubit",
+"Elävän musiikin paikat",
+"Historialliset kohteet", 
+"Hylätyt paikat",
+"Kahvilat & Pienpaahtimot",
+"Katutaide & Graffiti",
+"Kirppikset",
+"Kollektiivit & Yhteisöt",
+"Paikka hyvällä näkymällä",
+"Puistot & Hengailupaikat",
+"Salaiset & Piilotetut Paikat",
+"Skeittauspaikat",
+"Tapahtumat",
+"Muut"
+]
+
 def require_login():
     if "user_id" not in session:
         abort(403)
@@ -23,13 +41,12 @@ def index():
 
 @app.route("/find_spot")
 def find_spot():
-    query = request.args.get("query")
-    if query:
-        results = spots.find_spots(query)
-    else:
-        query = ""
-        results = []
-    return render_template("find_spot.html", query=query, results=results)
+    query = request.args.get("query", "")
+    category = request.args.get("category", "")
+
+    results = spots.find_spots(query, category)
+
+    return render_template("find_spot.html", query=query, results=results, category=category, categories=categories)
 
 @app.route("/spot/<int:spot_id>")
 def show_spot(spot_id):
@@ -48,12 +65,14 @@ def add_spot():
 def create_spot():
     require_login()
 
+    name = request.form["name"]
     lat = request.form["lat"]
     lon = request.form["lon"]
-    name = request.form["name"]
     description = request.form["description"]
     category = request.form["category"]
     user_id = int(session["user_id"])
+    if len(name) > 50 or len(lat) > 12 or len(lon) > 12 or len(description) > 1000:
+        abort(403)
 
     spots.add_spot(name, lat, lon, description, category, user_id)
 
@@ -84,6 +103,8 @@ def update_spot():
     name = request.form["name"]
     description = request.form["description"]
     category = request.form["category"]
+    if len(name) > 50 or len(lat) > 12 or len(lon) > 12 or len(description) > 1000:
+        abort(403)
 
     spots.update_spot(spot_id, name, lat, lon, description, category)
 
@@ -117,6 +138,8 @@ def add_comment():
 
     content = request.form["content"]
     user_id = session["user_id"]
+    if len(content) > 500:
+        abort(403)
 
     spots.add_comment(content, user_id, spot_id)
 
@@ -138,6 +161,8 @@ def edit_comment(comment_id):
     if request.method == "POST":
         if "edit" in request.form:
             content = request.form["content"]
+            if len(content) > 500:
+                abort(403)
             spots.edit_comment(comment_id, content)
         return redirect("/spot/" + str(spot_id))
 
