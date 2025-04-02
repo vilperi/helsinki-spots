@@ -1,4 +1,5 @@
 import sqlite3
+import re
 
 from flask import Flask, abort, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -61,17 +62,38 @@ def add_spot():
     require_login()
     return render_template("add_spot.html")
 
+def check_coords(coord):
+    coord = coord.strip().replace(",", ".")  # Convert comma to dot
+    try:
+        coord_flt = float(coord)
+        if len(coord) > 12:
+            abort(403)
+        return coord_flt
+    except ValueError:
+        return None  # Return None if invalid
+
+
 @app.route("/create_spot", methods=["POST"])
 def create_spot():
     require_login()
 
+    if "cancel" in request.form:
+        return redirect("/")
     name = request.form["name"]
     lat = request.form["lat"]
+    lat = check_coords(lat)
     lon = request.form["lon"]
+    lon = check_coords(lon)
     description = request.form["description"]
     category = request.form["category"]
     user_id = int(session["user_id"])
-    if len(name) > 50 or len(lat) > 12 or len(lon) > 12 or len(description) > 1000:
+    if not name or not lat or not lon or not category:
+        abort(403)
+    if not 6662022 < lat < 6694637:
+        abort(400, description="Pohjoiskoordinaatti väärin")
+    if not 360828 < lon < 410820:
+        abort(400, description="Itäkoordinaatti väärin")
+    if len(name) > 50 or len(description) > 1000:
         abort(403)
 
     spots.add_spot(name, lat, lon, description, category, user_id)
@@ -91,6 +113,8 @@ def edit_spot(spot_id):
 @app.route("/update_spot", methods=["POST"])
 def update_spot():
     require_login()
+    if "cancel" in request.form:
+        return redirect("/")
     spot_id = request.form["spot_id"]
     spot = spots.get_spot(spot_id)
     if not spot:
@@ -98,12 +122,21 @@ def update_spot():
     if spot["user_id"] != session["user_id"]:
         abort(403)
 
-    lat = request.form["lat"]
-    lon = request.form["lon"]
     name = request.form["name"]
+    lat = request.form["lat"]
+    lat = check_coords(lat)
+    lon = request.form["lon"]
+    lon = check_coords(lon)
     description = request.form["description"]
     category = request.form["category"]
-    if len(name) > 50 or len(lat) > 12 or len(lon) > 12 or len(description) > 1000:
+
+    if not name or not lat or not lon or not category:
+        abort(403)
+    if not 6662022 < lat < 6694637:
+        abort(400, description="Pohjoiskoordinaatti väärin")
+    if not 360828 < lon < 410820:
+        abort(400, description="Itäkoordinaatti väärin")
+    if len(name) > 50 or len(description) > 1000:
         abort(403)
 
     spots.update_spot(spot_id, name, lat, lon, description, category)
@@ -137,6 +170,8 @@ def add_comment():
         abort(404)
 
     content = request.form["content"]
+    if not content:
+        abort(403, "Älä jätä tyhjää kommenttia!")
     user_id = session["user_id"]
     if len(content) > 500:
         abort(403)
@@ -161,6 +196,8 @@ def edit_comment(comment_id):
     if request.method == "POST":
         if "edit" in request.form:
             content = request.form["content"]
+            if not content:
+                abort(403, "Älä jätä tyhjää kommenttia")
             if len(content) > 500:
                 abort(403)
             spots.edit_comment(comment_id, content)

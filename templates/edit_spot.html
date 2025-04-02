@@ -9,20 +9,23 @@
   <form action="/update_spot" method="post">
     <p>
       Kohteen nimi: <br />
-      <input type="text" name="name" value="{{ spot.name }}" maxlength="50"/>
+      <input type="text" name="name" value="{{ spot.name }}" maxlength="50" required/>
     </p>
     <p>
       Koordinaatit (ETRS-TM35FIN): <br />
-      <input type="text" name="lat" value="{{ spot.lat }}" maxlength="12"/> N
+      <li>Pohjoiskoordinaatti on muotoa 6673710,116. </li>
+      <li>Itäkoordinaatti on muotoa 385809,798</li>
+      <li>Koordinaatteja, jotka eivät ole Helsingin (lähi)alueella, ei hyväksytä </li> <br>
+      <input type="text" name="lat" value="{{ spot.lat }}" maxlength="12" required/> N
       <br><br>
-      <input type="text" name="lon" value="{{ spot.lon }}" maxlength="12"/> E
+      <input type="text" name="lon" value="{{ spot.lon }}" maxlength="12" required/> E
     </p>
     <p>
       <label for="description">Kuvaus:</label> <br />
-      <textarea id="description" name="description" rows="8" cols="60" maxlength="1000" required>{{ spot.description }}</textarea>
+      <textarea id="description" name="description" rows="8" cols="60" maxlength="1000">{{ spot.description }}</textarea>
     </p>
     <label for="category">Kategoria:</label>
-    <select id="category" name="category">
+    <select id="category" name="category" required>
       <option value="{{ spot.category }}" selected hidden>{{ spot.category }}</option>
       <option value="Arkkitehtuuri & Rakennustaide">Arkkitehtuuri & Rakennustaide</option>
       <option value="Baarit & Klubit">Baarit & Klubit</option>
@@ -41,6 +44,7 @@
       <option value="Muut">Muut</option>
     </select>
     <input type="hidden" name="spot_id" value="{{ spot.id }}" />
+    <input type="submit" name="cancel" value="Peruuta" formnovalidate/>
     <input type="submit" value="Muokkaa kohdetta" />
   </form>
 </body>
