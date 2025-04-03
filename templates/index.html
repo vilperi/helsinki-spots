@@ -96,7 +96,7 @@
   <nav class="top-links">
     <div class="left-links">
       {% if session.username %}
-        <p>Kirjautunut nimellä {{ session.username }}</p>
+        <p>Kirjautunut nimellä <a href="/user/{{ session.user_id }}">{{ session.username }}</a></p>
         <a href="/logout">Kirjaudu ulos</a>
       {% else %}
         <a href="/login">Kirjaudu sisään</a>

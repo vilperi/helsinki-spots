@@ -7,27 +7,28 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import db
 import config
 import spots
+import users
 
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
 categories = [
-"Arkkitehtuuri & Rakennustaide",
-"Baarit & Klubit",
-"Elävän musiikin paikat",
-"Historialliset kohteet", 
-"Hylätyt paikat",
-"Kahvilat & Pienpaahtimot",
-"Katutaide & Graffiti",
-"Kirppikset",
-"Kollektiivit & Yhteisöt",
-"Paikka hyvällä näkymällä",
-"Puistot & Hengailupaikat",
-"Salaiset & Piilotetut Paikat",
-"Skeittauspaikat",
-"Tapahtumat",
-"Muut"
+    "Arkkitehtuuri & Rakennustaide",
+    "Baarit & Klubit",
+    "Elävän musiikin paikat",
+    "Historialliset kohteet",
+    "Hylätyt paikat",
+    "Kahvilat & Pienpaahtimot",
+    "Katutaide & Graffiti",
+    "Kirppikset",
+    "Kollektiivit & Yhteisöt",
+    "Paikka hyvällä näkymällä",
+    "Puistot & Hengailupaikat",
+    "Salaiset & Piilotetut Paikat",
+    "Skeittauspaikat",
+    "Tapahtumat",
+    "Muut"
 ]
 
 def require_login():
@@ -39,6 +40,16 @@ def index():
     all_spots = spots.get_spots()
 
     return render_template("index.html", spots=all_spots)
+
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    user = users.get_user(user_id)
+    spots = users.get_spots(user_id)
+    comment_count = users.count_comments(user_id)
+    if not user:
+        abort(404)
+
+    return render_template("/show_user.html", user=user, spots=spots, comment_count=comment_count)
 
 @app.route("/find_spot")
 def find_spot():
@@ -90,8 +101,10 @@ def create_spot():
     if not name or not lat or not lon or not category:
         abort(403)
     if not 6662022 < lat < 6694637:
+        users.wrong_coords(user_id)
         abort(400, description="Pohjoiskoordinaatti väärin")
     if not 360828 < lon < 410820:
+        users.wrong_coords(user_id)
         abort(400, description="Itäkoordinaatti väärin")
     if len(name) > 50 or len(description) > 1000:
         abort(403)
@@ -129,12 +142,15 @@ def update_spot():
     lon = check_coords(lon)
     description = request.form["description"]
     category = request.form["category"]
+    user_id = int(session["user_id"])
 
     if not name or not lat or not lon or not category:
         abort(403)
     if not 6662022 < lat < 6694637:
+        users.wrong_coords(user_id)
         abort(400, description="Pohjoiskoordinaatti väärin")
     if not 360828 < lon < 410820:
+        users.wrong_coords(user_id)
         abort(400, description="Itäkoordinaatti väärin")
     if len(name) > 50 or len(description) > 1000:
         abort(403)
@@ -237,7 +253,7 @@ def create():
     password_hash = generate_password_hash(password1)
 
     try:
-        sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
+        sql = "INSERT INTO users (username, created_at, password_hash) VALUES (?, datetime('now', 'localtime'), ?)"
         db.execute(sql, [username, password_hash])
     except sqlite3.IntegrityError:
         return "VIRHE: tunnus on jo varattu"

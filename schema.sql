@@ -1,6 +1,8 @@
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
     username TEXT UNIQUE,
+    created_at TEXT,
+    wrong_coords INTEGER DEFAULT 0,
     password_hash TEXT
 );
 

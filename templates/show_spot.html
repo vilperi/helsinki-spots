@@ -26,7 +26,7 @@
     Kategoria: {{ spot.category }}
   </p>
   <p>
-    Tekijä: {{ spot.username }}
+    Tekijä: <a href="/user/{{ spot.user_id }}">{{ spot.username }}</a>
   </p>
   <p>
     <a href="/">Takaisin</a>
@@ -38,7 +38,7 @@
   </p>
   {% for comment in comments %}
   <p>
-    <b>{{ comment.username }}</b> ({{ comment.sent_at }}):
+    <b><a href="/user/{{ spot.user_id }}">{{ comment.username }}</a></b> ({{ comment.sent_at }}):
   </p>
   <p>
     {{ comment.content }}
