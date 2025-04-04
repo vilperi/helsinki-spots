@@ -17,8 +17,7 @@ def check_login(username, password):
     if check_password_hash(password_hash, password):
         return user_id
     else:
-        return 
-
+        return None
 
 def get_user(user_id):
     sql = "SELECT id, username, created_at, wrong_coords FROM users WHERE id = ?"
