@@ -16,9 +16,22 @@
       <li>Pohjoiskoordinaatti on muotoa 6673710,116 </li>
       <li>Itäkoordinaatti on muotoa 385809,798</li>
       <li>Koordinaatteja, jotka eivät ole Helsingin (lähi)alueella, ei hyväksytä </li> <br>
-      <input type="text" name="lat" value="{{ spot.lat }}" maxlength="12" required/> N
+      <input
+        type="text"
+        name="lat"
+        pattern="^\s*\d+([,.]\d+)?\s*$"
+        maxlength="12"
+        value="{{ spot.lat }}"
+        required/> N
       <br><br>
-      <input type="text" name="lon" value="{{ spot.lon }}" maxlength="12" required/> E
+      <input
+        type="text"
+        name="lon"
+        pattern="^\s*\d+([,.]\d+)?\s*$"
+        maxlength="12"
+        value="{{ spot.lon }}"
+        required/> E
+    </p>
     </p>
     <p>
       <label for="description">Kuvaus:</label> <br />
@@ -26,9 +39,8 @@
     </p>
     <label for="category">Kategoria:</label>
     <select id="category" name="category" required>
-      <option value="" disabled selected hidden>Valitse kategoria</option>
       {% for cat in categories %}
-        <option value="{{ cat }}">{{ cat }}</option>
+        <option value="{{ cat }}" {% if cat == spot.category %}selected{% endif %}>{{ cat }}</option>
       {% endfor %}
     </select>
     <input type="hidden" name="spot_id" value="{{ spot.id }}" />

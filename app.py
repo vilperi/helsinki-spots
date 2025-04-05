@@ -67,10 +67,6 @@ def show_spot(spot_id):
     comments = spots.get_comments(spot_id)
     return render_template("/show_spot.html", spot=spot, comments=comments)
 
-@app.route("/add_spot")
-def add_spot():
-    require_login()
-    return render_template("add_spot.html", categories=categories)
 
 def check_coords(coord):
     coord = coord.strip().replace(",", ".")  # Convert comma to dot
@@ -82,6 +78,11 @@ def check_coords(coord):
     except ValueError:
         return None  # Return None if invalid
 
+
+@app.route("/add_spot")
+def add_spot():
+    require_login()
+    return render_template("add_spot.html", categories=categories)
 
 @app.route("/create_spot", methods=["POST"])
 def create_spot():
@@ -106,6 +107,8 @@ def create_spot():
         users.wrong_coords(user_id)
         abort(400, description="Itäkoordinaatti väärin")
     if len(name) > 50 or len(description) > 1000:
+        abort(403)
+    if category not in categories:
         abort(403)
 
     spots.add_spot(name, lat, lon, description, category, user_id)
@@ -152,6 +155,8 @@ def update_spot():
         users.wrong_coords(user_id)
         abort(400, description="Itäkoordinaatti väärin")
     if len(name) > 50 or len(description) > 1000:
+        abort(403)
+    if category not in categories:
         abort(403)
 
     spots.update_spot(spot_id, name, lat, lon, description, category)
