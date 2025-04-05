@@ -70,7 +70,7 @@ def show_spot(spot_id):
 @app.route("/add_spot")
 def add_spot():
     require_login()
-    return render_template("add_spot.html")
+    return render_template("add_spot.html", categories=categories)
 
 def check_coords(coord):
     coord = coord.strip().replace(",", ".")  # Convert comma to dot
@@ -120,7 +120,7 @@ def edit_spot(spot_id):
         abort(404)
     if spot["user_id"] != session["user_id"]:
         abort(403)
-    return render_template("edit_spot.html", spot=spot)
+    return render_template("edit_spot.html", spot=spot, categories=categories)
 
 @app.route("/update_spot", methods=["POST"])
 def update_spot():

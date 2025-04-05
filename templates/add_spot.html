@@ -38,21 +38,9 @@
     <label for="category">Kategoria:</label>
     <select id="category" name="category" required>
       <option value="" disabled selected hidden>Valitse kategoria</option>
-      <option value="Arkkitehtuuri & Rakennustaide">Arkkitehtuuri & Rakennustaide</option>
-      <option value="Baarit & Klubit">Baarit & Klubit</option>
-      <option value="Elävän musiikin paikat">Elävän musiikin paikat</option>
-      <option value="Historialliset kohteet">Historialliset kohteet</option>
-      <option value="Hylätyt paikat">Hylätyt paikat</option>
-      <option value="Kahvilat & Pienpaahtimot">Kahvilat & Pienpaahtimot</option>
-      <option value="Katutaide & Graffiti">Katutaide & Graffiti</option>
-      <option value="Kirppikset">Kirppikset</option>
-      <option value="Kollektiivit & Yhteisöt">Kollektiivit & Yhteisöt</option>
-      <option value="Paikka hyvällä näkymällä">Paikka hyvällä näkymällä</option>
-      <option value="Puistot & Hengailupaikat">Puistot & Hengailupaikat</option>
-      <option value="Salaiset & Piilotetut Paikat">Salaiset & Piilotetut Paikat</option>
-      <option value="Skeittauspaikat">Skeittauspaikat</option>
-      <option value="Tapahtumat">Tapahtumat</option>
-      <option value="Muut">Muut</option>
+      {% for cat in categories %}
+        <option value="{{ cat }}">{{ cat }}</option>
+      {% endfor %}
     </select>
     <input type="submit" name="cancel" value="Peruuta" formnovalidate/>
     <input type="submit" name="add" value="Lisää kohde" />
