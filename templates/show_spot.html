@@ -3,6 +3,12 @@
 
 <head>
   <title>{{ spot.name }}</title>
+  <style>
+    img {
+        width: 300px;
+        margin: 10px;
+    }
+</style>
 </head>
 
 <body>
@@ -14,6 +20,9 @@
     <a href="/remove_spot/{{ spot.id }}">Poista</a>
   </p>
   {% endif %}
+  {% for image in images %}
+  <img src="/image/{{ image.id }}" alt="Ilmoituksen kuva" />
+  {% endfor %}
   <p>
     Kuvaus: <br />
     {{ spot.description }}

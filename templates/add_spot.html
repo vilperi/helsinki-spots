@@ -6,10 +6,14 @@
 </head>
 
 <body>
-  <form action="/create_spot" method="post">
+  <form action="/create_spot" method="post" enctype="multipart/form-data">
     <p>
       Kohteen nimi: <br />
       <input type="text" name="name" maxlength="50" required />
+    </p>
+    <p>
+      Kuvat: (Maksimikoko <strong>200 kt</strong>, hyväksytty tiedostomuoto <strong>.png</strong>) <br> <br>
+      <input type="file" name="image" accept=".png" multiple/>
     </p>
     <p>
       Koordinaatit (ETRS-TM35FIN):<br />

@@ -26,3 +26,10 @@ CREATE TABLE comments (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (spot_id) REFERENCES spots(id) ON DELETE CASCADE
 );
+
+CREATE TABLE images (
+    id INTEGER PRIMARY KEY,
+    spot_id INTEGER,
+    image BLOB,
+    FOREIGN KEY (spot_id) REFERENCES spots(id) ON DELETE CASCADE
+);

@@ -65,8 +65,18 @@ def show_spot(spot_id):
     if not spot:
         abort(404)
     comments = spots.get_comments(spot_id)
-    return render_template("/show_spot.html", spot=spot, comments=comments)
+    images = spots.get_images(spot_id)
+    return render_template("/show_spot.html", spot=spot, comments=comments, images=images)
 
+@app.route("/image/<int:image_id>")
+def show_image(image_id):
+    image = spots.get_image(image_id)
+    if not image:
+        abort(404)
+
+    response = make_response(bytes(image))
+    response.headers.set("Content-Type", "image/png")
+    return response
 
 def check_coords(coord):
     coord = coord.strip().replace(",", ".")  # Convert comma to dot
@@ -78,11 +88,26 @@ def check_coords(coord):
     except ValueError:
         return None  # Return None if invalid
 
-
 @app.route("/add_spot")
 def add_spot():
     require_login()
     return render_template("add_spot.html", categories=categories)
+
+def check_images(files):
+    for file in files:
+        if file:
+            if not file.filename.endswith(".png"):
+                abort(400, "Väärä tiedostomuoto")
+            image = file.read()
+            if len(image) > 200 * 1024:
+                abort(400, "Liian iso tiedosto")
+            file.seek(0)
+
+def upload_images(files, spot_id):
+    for file in files:
+        if file:
+            image = file.read()
+            spots.add_image(image, spot_id)
 
 @app.route("/create_spot", methods=["POST"])
 def create_spot():
@@ -98,6 +123,8 @@ def create_spot():
     description = request.form["description"]
     category = request.form["category"]
     user_id = int(session["user_id"])
+    files = request.files.getlist("image")
+
     if not name or not lat or not lon or not category:
         abort(403)
     if not 6662022 < lat < 6694637:
@@ -111,8 +138,10 @@ def create_spot():
     if category not in categories:
         abort(403)
 
+    check_images(files)
     spots.add_spot(name, lat, lon, description, category, user_id)
-
+    spot_id = spots.get_last_id()
+    upload_images(files, spot_id)
     return redirect("/")
 
 @app.route("/edit_spot/<int:spot_id>")
@@ -123,6 +152,7 @@ def edit_spot(spot_id):
         abort(404)
     if spot["user_id"] != session["user_id"]:
         abort(403)
+
     return render_template("edit_spot.html", spot=spot, categories=categories)
 
 @app.route("/update_spot", methods=["POST"])
