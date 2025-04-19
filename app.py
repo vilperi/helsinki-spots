@@ -1,7 +1,7 @@
 import sqlite3
 import re
 
-from flask import Flask, abort, redirect, render_template, request, session
+from flask import Flask, abort, redirect, render_template, request, session, make_response
 
 import db
 import config
@@ -140,7 +140,7 @@ def create_spot():
 
     check_images(files)
     spots.add_spot(name, lat, lon, description, category, user_id)
-    spot_id = spots.get_last_id()
+    spot_id = db.last_insert_id()
     upload_images(files, spot_id)
     return redirect("/")
 
