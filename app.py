@@ -88,6 +88,22 @@ def check_coords(coord):
     except ValueError:
         return None  # Return None if invalid
 
+@app.route("/remove_images", methods=["POST"])
+def remove_images():
+    require_login()
+
+    spot_id = request.form["spot_id"]
+    spot = spots.get_spot(spot_id)
+    if not spot:
+        abort(404)
+    if spot["user_id"] != session["user_id"]:
+        abort(403)
+
+    for image_id in request.form.getlist("image_id"):
+        spots.remove_image(spot_id, image_id)
+
+    return redirect("/edit_spot/" + str(spot_id))
+
 @app.route("/add_spot")
 def add_spot():
     require_login()
@@ -148,18 +164,21 @@ def create_spot():
 def edit_spot(spot_id):
     require_login()
     spot = spots.get_spot(spot_id)
+    images = spots.get_images(spot_id)
     if not spot:
         abort(404)
     if spot["user_id"] != session["user_id"]:
         abort(403)
 
-    return render_template("edit_spot.html", spot=spot, categories=categories)
+    return render_template("edit_spot.html", spot=spot, categories=categories, images=images)
 
 @app.route("/update_spot", methods=["POST"])
 def update_spot():
     require_login()
+
     if "cancel" in request.form:
         return redirect("/")
+
     spot_id = request.form["spot_id"]
     spot = spots.get_spot(spot_id)
     if not spot:
@@ -175,6 +194,7 @@ def update_spot():
     description = request.form["description"]
     category = request.form["category"]
     user_id = int(session["user_id"])
+    files = request.files.getlist("image")
 
     if not name or not lat or not lon or not category:
         abort(403)
@@ -189,8 +209,10 @@ def update_spot():
     if category not in categories:
         abort(403)
 
-    spots.update_spot(spot_id, name, lat, lon, description, category)
+    check_images(files)
 
+    spots.update_spot(spot_id, name, lat, lon, description, category)
+    upload_images(files, spot_id)
     return redirect("/spot/" + str(spot_id))
 
 @app.route("/remove_spot/<int:spot_id>", methods=["GET", "POST"])
