@@ -1,7 +1,7 @@
 import sqlite3
 import re
 
-from flask import Flask, abort, redirect, render_template, request, session, make_response
+from flask import Flask, abort, redirect, render_template, request, session, make_response, flash
 
 import db
 import config
@@ -145,10 +145,12 @@ def create_spot():
         abort(403)
     if not 6662022 < lat < 6694637:
         users.wrong_coords(user_id)
-        abort(400, description="Pohjoiskoordinaatti väärin")
+        flash("Pohjoiskoordinaatti väärin")
+        return redirect("/add_spot")
     if not 360828 < lon < 410820:
         users.wrong_coords(user_id)
-        abort(400, description="Itäkoordinaatti väärin")
+        flash("Itäkoordinaatti väärin")
+        return redirect("/add_spot")
     if len(name) > 50 or len(description) > 1000:
         abort(403)
     if category not in categories:
@@ -200,10 +202,11 @@ def update_spot():
         abort(403)
     if not 6662022 < lat < 6694637:
         users.wrong_coords(user_id)
-        abort(400, description="Pohjoiskoordinaatti väärin")
+        flash("Pohjoiskoordinaatti väärin")
+        return redirect("edit_spot/" + str(spot_id))
     if not 360828 < lon < 410820:
-        users.wrong_coords(user_id)
-        abort(400, description="Itäkoordinaatti väärin")
+        flash("Itäkoordinaatti väärin")
+        return redirect("edit_spot/" + str(spot_id))
     if len(name) > 50 or len(description) > 1000:
         abort(403)
     if category not in categories:
@@ -307,14 +310,16 @@ def create():
     if not username or not password1 or not password2:
         abort(403)
     if password1 != password2:
-        return "VIRHE: salasanat eivät ole samat"
-
+        flash("VIRHE: Salasanat eivät ole samat")
+        return redirect("/register")
     try:
         users.create_user(username, password1)
     except sqlite3.IntegrityError:
-        return "VIRHE: tunnus on jo varattu"
+        flash("VIRHE: Tunnus on jo varattu")
+        return redirect("/register")
 
-    return "Tunnus luotu"
+    flash("Tunnus luotu")
+    return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -332,7 +337,8 @@ def login():
             session["username"] = username
             return redirect("/")
         else:
-            return "VIRHE: väärä tunnus tai salasana"
+            flash("VIRHE: Väärä tunnus tai salasana")
+            return redirect("/login")
 
 @app.route("/logout")
 def logout():

@@ -75,7 +75,7 @@ h2 {
   font-family: sans-serif;
 }
 
-.content {
+main {
   margin: auto;
   max-width: 50em;
   font-family: sans-serif;
@@ -167,4 +167,12 @@ img {
 
 .spot-box h4 {
   font-weight:900;
+}
+
+.info {
+  border: 2px solid black;
+  margin: 1em;
+  padding: 0.5em;
+  background-color: blue;
+  color: white;
 }
