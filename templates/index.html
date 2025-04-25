@@ -1,23 +1,22 @@
 {% extends "layout.html" %}
 
-{% block title %}HelsinkiSpots{% endblock %}
+{% block title %}Helsinki Spots{% endblock %}
 
 {% block content %}
-
-<h2>Kohteet</h2>
-
-<div class="spot-list">
-  {% for spot in spots %}
-  <a href="/spot/{{ spot.spot_id }}" class="spot-box-link">
-    <div class="spot-box {% if loop.index0 % 2 == 0 %}even{% else %}odd{% endif %}">
-      <img src="/image/{{ spot.image_id }}" alt="{{ spot.name }}">
-      <h3>{{ spot.name }}</h3>
-      <p>Tekijä: {{ spot.username }}</p>
-      <p>Kommentteja: {{ comment_count }}</p>
-    </div>
-  </a>
-  {% endfor %}
-</div>
-
-
+  <div class="spot-list">
+    {% for spot in spots %}
+      <a href="/spot/{{ spot.spot_id }}" class="spot-box-link">
+        <div class="spot-box {% if loop.index0 % 2 == 0 %}even{% else %}odd{% endif %}">
+          <img src="/image/{{ spot.image_id }}" alt="{{ spot.name }}">
+          <h3>{{ spot.name }}</h3>
+          <h4>Kategoria:</h4>
+          <p>{{ spot.category }}</p>
+          <h4>Tekijä:</h4>
+          <p>{{ spot.username }}</p>
+          <h4>Kommentteja:</h4>
+          <p>{{ spot.comment_count }}</p>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
 {% endblock %}

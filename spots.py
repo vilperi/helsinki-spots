@@ -13,7 +13,18 @@ def add_image(image, spot_id):
     db.execute(sql, [image, spot_id])
 
 def get_spots():
-    sql = "SELECT s.id spot_id, s.name, i.id image_id FROM spots s, images i WHERE i.spot_id = s.id ORDER BY s.id DESC"
+    sql = """SELECT s.id spot_id,
+                    s.name,
+                    s.category,
+                    MIN(i.id) image_id,
+                    u.username,
+                    COUNT(DISTINCT c.id) comment_count
+            FROM spots s
+            LEFT JOIN images i ON i.spot_id = s.id
+            LEFT JOIN users u ON s.user_id = u.id
+            LEFT JOIN comments c ON c.spot_id = s.id
+            GROUP BY s.id, s.category, s.name, u.username
+            ORDER BY s.id DESC"""
 
     return db.query(sql)
 
