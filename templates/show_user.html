@@ -1,26 +1,21 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Käyttäjä {{ user.username }}</title>
-</head>
+{% block title %}Käyttäjä {{ user.username }}{% endblock %}
 
-<body>
-  <h1>Käyttäjä {{ user.username }}</h1>
-  <p>Tietoja käyttäjästä:</p>
-  <li>Käyttäjä luotu: {{ user.created_at }}</li>
-  <li>Kohteita yhteensä: {{ spots | count }}</li>
-  <li>Kommentteja yhteensä: {{ comment_count }}</li>
-  <li>Vääriä koordinaatteja syötetty: {{ user.wrong_coords }}</li>
-  <hr>
-  <p>Käyttäjän kohteet:</p>
-  {% for spot in spots %}
-  <li><a href="/spot/{{ spot.id }}">{{ spot.name }}</a></li>
-  {% endfor %}
-  <hr>
-  <p>
-    <a href="/">Takaisin</a>
-  </p>
-</body>
-
-</html>
+{% block content %}
+<h1>Käyttäjä {{ user.username }}</h1>
+<p>Tietoja käyttäjästä:</p>
+<li>Käyttäjä luotu: {{ user.created_at }}</li>
+<li>Kohteita yhteensä: {{ spots | count }}</li>
+<li>Kommentteja yhteensä: {{ comment_count }}</li>
+<li>Vääriä koordinaatteja syötetty: {{ user.wrong_coords }}</li>
+<hr>
+<p>Käyttäjän kohteet:</p>
+{% for spot in spots %}
+<li><a href="/spot/{{ spot.id }}">{{ spot.name }}</a></li>
+{% endfor %}
+<hr>
+<p>
+  <a href="/">Takaisin</a>
+</p>
+{% endblock %}

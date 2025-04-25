@@ -1,18 +1,13 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Kohteen poisto</title>
-</head>
+{% block title %}Kohteen poisto{% endblock %}
 
-<body>
-  <form action="/remove_spot/{{ spot.id }}" method="post">
-    <p>
-      Haluatko varmasti poistaa kohteen <b>{{spot.name}} </b>? 
-    </p>
-    <input type="submit" name="cancel" value="Peruuta" />
-    <input type="submit" name="remove" value="Poista" />
-  </form>
-</body>
-
-</html>
+{% block content %}
+<form action="/remove_spot/{{ spot.id }}" method="post">
+  <p>
+    Haluatko varmasti poistaa kohteen <b>{{spot.name}} </b>? 
+  </p>
+  <input type="submit" name="cancel" value="Peruuta" />
+  <input type="submit" name="remove" value="Poista" />
+</form>
+{% endblock %}

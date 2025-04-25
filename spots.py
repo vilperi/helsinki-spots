@@ -13,7 +13,7 @@ def add_image(image, spot_id):
     db.execute(sql, [image, spot_id])
 
 def get_spots():
-    sql = "SELECT id, name FROM spots ORDER BY id DESC"
+    sql = "SELECT s.id spot_id, s.name, i.id image_id FROM spots s, images i WHERE i.spot_id = s.id ORDER BY s.id DESC"
 
     return db.query(sql)
 

@@ -1,54 +1,49 @@
-<!DOCTYPE html>
-<html lang="fi">
+{% extends "layout.html" %}
 
-<head>
-  <title>Lisää kohde</title>
-</head>
+{% block title %}Lisää kohde{% endblock %}
 
-<body>
-  <form action="/create_spot" method="post" enctype="multipart/form-data">
-    <p>
-      Kohteen nimi: <br />
-      <input type="text" name="name" maxlength="50" required />
-    </p>
-    <p>
-      Kuvat: (Maksimikoko <strong>200 kt</strong>, hyväksytty tiedostomuoto <strong>.png</strong>) <br> <br>
-      <input type="file" name="image" accept=".png" multiple/>
-    </p>
-    <p>
-      Koordinaatit (ETRS-TM35FIN):<br />
-      <li>Hae koordinaatit <a href="https://kartta.paikkatietoikkuna.fi/" target="_blank">Paikkatietoikkunasta</a></li>
-      <li>Pohjoiskoordinaatti on muotoa 6673710,116 </li>
-      <li>Itäkoordinaatti on muotoa 385809,798</li>
-      <li>Koordinaatteja, jotka eivät ole Helsingin (lähi)alueella, ei hyväksytä </li> <br>
-      <input
-        type="text"
-        name="lat"
-        pattern="^\s*\d+([,.]\d+)?\s*$"
-        maxlength="12"
-        required/> N
-      <br><br>
-      <input
-        type="text"
-        name="lon"
-        pattern="^\s*\d+([,.]\d+)?\s*$"
-        maxlength="12"
-        required/> E
-    </p>
-    <p>
-      <label for="description">Kuvaus:</label> <br />
-      <textarea id="description" name="description" rows="8" cols="60" maxlength="1000"></textarea>
-    </p>
-    <label for="category">Kategoria:</label>
-    <select id="category" name="category" required>
-      <option value="" disabled selected hidden>Valitse kategoria</option>
-      {% for cat in categories %}
-        <option value="{{ cat }}">{{ cat }}</option>
-      {% endfor %}
-    </select>
-    <input type="submit" name="cancel" value="Peruuta" formnovalidate/>
-    <input type="submit" name="add" value="Lisää kohde" />
-  </form>
-</body>
-
-</html>
+{% block content %}
+<form action="/create_spot" method="post" enctype="multipart/form-data">
+  <p>
+    Kohteen nimi: <br />
+    <input type="text" name="name" maxlength="50" required />
+  </p>
+  <p>
+    Kuvat: (Maksimikoko <strong>200 kt</strong>, hyväksytty tiedostomuoto <strong>.png</strong>) <br> <br>
+    <input type="file" name="image" accept=".png" multiple/>
+  </p>
+  <p>
+    Koordinaatit (ETRS-TM35FIN):<br />
+    <li>Hae koordinaatit <a href="https://kartta.paikkatietoikkuna.fi/" target="_blank">Paikkatietoikkunasta</a></li>
+    <li>Pohjoiskoordinaatti on muotoa 6673710,116 </li>
+    <li>Itäkoordinaatti on muotoa 385809,798</li>
+    <li>Koordinaatteja, jotka eivät ole Helsingin (lähi)alueella, ei hyväksytä </li> <br>
+    <input
+      type="text"
+      name="lat"
+      pattern="^\s*\d+([,.]\d+)?\s*$"
+      maxlength="12"
+      required/> N
+    <br><br>
+    <input
+      type="text"
+      name="lon"
+      pattern="^\s*\d+([,.]\d+)?\s*$"
+      maxlength="12"
+      required/> E
+  </p>
+  <p>
+    <label for="description">Kuvaus:</label> <br />
+    <textarea id="description" name="description" rows="8" cols="60" maxlength="1000"></textarea>
+  </p>
+  <label for="category">Kategoria:</label>
+  <select id="category" name="category" required>
+    <option value="" disabled selected hidden>Valitse kategoria</option>
+    {% for cat in categories %}
+      <option value="{{ cat }}">{{ cat }}</option>
+    {% endfor %}
+  </select>
+  <input type="submit" name="cancel" value="Peruuta" formnovalidate/>
+  <input type="submit" name="add" value="Lisää kohde" />
+</form>
+{% endblock %}

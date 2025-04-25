@@ -1,40 +1,35 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Etsi kohde</title>
-</head>
+{% block title %}Etsi kohde{% endblock %}
 
-<body>
-  <h1>Etsi kohde</h1>
-  <a href="/">Takaisin</a>
-  <form action="find_spot" method="get">
-    <p>
-      Hakusana: <input type="text" value="{{ query }}" name="query">
-    </p>
-    <label for="category">Kategoria:</label>
-    <select id="category" name="category">
-      <option value="all" selected>Kaikki</option>
-      {% for cat in categories %}
-        <option value="{{ cat }}" {% if category == cat %} selected {% endif %}>{{ cat }}</option>
+{% block content %}
+<h1>Etsi kohde</h1>
+<a href="/">Takaisin</a>
+<form action="find_spot" method="get">
+  <p>
+    Hakusana: <input type="text" value="{{ query }}" name="query">
+  </p>
+  <label for="category">Kategoria:</label>
+  <select id="category" name="category">
+    <option value="all" selected>Kaikki</option>
+    {% for cat in categories %}
+      <option value="{{ cat }}" {% if category == cat %} selected {% endif %}>{{ cat }}</option>
+    {% endfor %}
+  </select>
+  <input type="submit" value="Hae">
+</form>
+
+
+{% if query or category %}
+  {% if results %}
+    <h2>Tulokset</h2>
+    <ul>
+      {% for spot in results %}
+        <li><a href="/spot/{{ spot.id }}">{{ spot.name }}</a></li>
       {% endfor %}
-    </select>
-    <input type="submit" value="Hae">
-  </form>
-
-
-  {% if query or category %}
-    {% if results %}
-      <h2>Tulokset</h2>
-      <ul>
-        {% for spot in results %}
-          <li><a href="/spot/{{ spot.id }}">{{ spot.name }}</a></li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <h2>Ei tuloksia</h2>
-    {% endif %}
+    </ul>
+  {% else %}
+    <h2>Ei tuloksia</h2>
   {% endif %}
-</body>
-
-</html>
+{% endif %}
+{% endblock %}

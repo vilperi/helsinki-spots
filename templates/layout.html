@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/main.css">
+</head>
+
+<body>
+  <header>
+    <div class="top-row">
+      <a href="/" id="header-link">
+        <h1>Helsinki Spots</h1>
+      </a>
+      <nav class="top-links">
+        <div class="left-links">
+          {% if session.username %}
+            <p>Kirjautunut nimellä <a href="/user/{{ session.user_id }}">{{ session.username }}</a></p>
+            <a href="/logout">Kirjaudu ulos</a>
+          {% else %}
+            <a href="/login">Kirjaudu sisään</a>
+            <a href="/register">Rekisteröidy</a>
+          {% endif %}
+        </div>
+  
+        <div class="right-links">
+          <a href="/find_spot">Hae kohteita</a>
+          {% if session.username %}
+            <a href="/add_spot">Lisää uusi kohde</a>
+          {% endif %}
+        </div>
+      </nav>
+    </div>
+  </header>  
+
+  {% for message in get_flashed_messages() %}
+  <div class="info">
+    {{ message }}
+  </div>
+  {% endfor %}
+
+  {% block content %}{% endblock %} 
+</body>
+</html>

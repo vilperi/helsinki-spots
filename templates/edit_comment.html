@@ -1,26 +1,21 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Muokkaa kommenttia</title>
-</head>
+{% block title %}Muokkaa kommenttia{% endblock %}
 
-<body>
+{% block content %}
 
-  <h3>Muokkaa kommenttia</h3>
+<h3>Muokkaa kommenttia</h3>
 
+<p>
+  <b>{{ comment.username }}</b> ({{ comment.sent_at }}):
+</p>
+
+<form action="/edit_comment/{{ comment.id }}" method="post">
   <p>
-    <b>{{ comment.username }}</b> ({{ comment.sent_at }}):
+    Kommentti:<br />
+    <textarea name="content" rows="5" cols="40" maxlength="500" required>{{ comment.content }}</textarea>
   </p>
-
-  <form action="/edit_comment/{{ comment.id }}" method="post">
-    <p>
-      Kommentti:<br />
-      <textarea name="content" rows="5" cols="40" maxlength="500" required>{{ comment.content }}</textarea>
-    </p>
-    <input type="submit" name="cancel" value="Peruuta" />
-    <input type="submit" name="edit" value="Muokkaa" />
-  </form>
-</body>
-
-</html>
+  <input type="submit" name="cancel" value="Peruuta" />
+  <input type="submit" name="edit" value="Muokkaa" />
+</form>
+{% endblock %}

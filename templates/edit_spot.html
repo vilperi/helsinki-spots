@@ -1,70 +1,65 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Muokkaa kohdetta</title>
-</head>
+{% block title %}Muokkaa kohdetta{% endblock %}
 
-<body>
-  {% if images %}
-  <form action="/remove_images" method="post">
-    {% for image in images %}
-    <input type="checkbox" name="image_id" value="{{ image.id }}">
-    <img src="/image/{{ image.id }}" alt="Ilmoituksen kuva" />
-    <br />
+{% block content %}
+{% if images %}
+<form action="/remove_images" method="post">
+  {% for image in images %}
+  <input type="checkbox" name="image_id" value="{{ image.id }}">
+  <img src="/image/{{ image.id }}" alt="Ilmoituksen kuva" />
+  <br />
+  {% endfor %}
+  <input type="hidden" name="spot_id" value="{{ spot.id }}">
+  <p>
+    <input type="submit" value="Poista valitut" />
+  </p>
+</form>
+{% endif %}
+
+<form action="/update_spot" method="post" enctype="multipart/form-data">
+  <p>
+    Kohteen nimi: <br />
+    <input type="text" name="name" value="{{ spot.name }}" maxlength="50" required/>
+  </p>
+  <p>
+    Lisää kuvia: (Maksimikoko <strong>200 kt</strong>, hyväksytty tiedostomuoto <strong>.png</strong>) <br> <br>
+    <input type="file" name="image" accept=".png" multiple/>
+  </p>
+  <p>
+    Koordinaatit (ETRS-TM35FIN): <br />
+    <li>Pohjoiskoordinaatti on muotoa 6673710,116 </li>
+    <li>Itäkoordinaatti on muotoa 385809,798</li>
+    <li>Koordinaatteja, jotka eivät ole Helsingin (lähi)alueella, ei hyväksytä </li> <br>
+    <input
+      type="text"
+      name="lat"
+      pattern="^\s*\d+([,.]\d+)?\s*$"
+      maxlength="12"
+      value="{{ spot.lat }}"
+      required/> N
+    <br><br>
+    <input
+      type="text"
+      name="lon"
+      pattern="^\s*\d+([,.]\d+)?\s*$"
+      maxlength="12"
+      value="{{ spot.lon }}"
+      required/> E
+  </p>
+  </p>
+  <p>
+    <label for="description">Kuvaus:</label> <br />
+    <textarea id="description" name="description" rows="8" cols="60" maxlength="1000">{{ spot.description }}</textarea>
+  </p>
+  <label for="category">Kategoria:</label>
+  <select id="category" name="category" required>
+    {% for cat in categories %}
+      <option value="{{ cat }}" {% if cat == spot.category %}selected{% endif %}>{{ cat }}</option>
     {% endfor %}
-    <input type="hidden" name="spot_id" value="{{ spot.id }}">
-    <p>
-      <input type="submit" value="Poista valitut" />
-    </p>
-  </form>
-  {% endif %}
-
-  <form action="/update_spot" method="post" enctype="multipart/form-data">
-    <p>
-      Kohteen nimi: <br />
-      <input type="text" name="name" value="{{ spot.name }}" maxlength="50" required/>
-    </p>
-    <p>
-      Lisää kuvia: (Maksimikoko <strong>200 kt</strong>, hyväksytty tiedostomuoto <strong>.png</strong>) <br> <br>
-      <input type="file" name="image" accept=".png" multiple/>
-    </p>
-    <p>
-      Koordinaatit (ETRS-TM35FIN): <br />
-      <li>Pohjoiskoordinaatti on muotoa 6673710,116 </li>
-      <li>Itäkoordinaatti on muotoa 385809,798</li>
-      <li>Koordinaatteja, jotka eivät ole Helsingin (lähi)alueella, ei hyväksytä </li> <br>
-      <input
-        type="text"
-        name="lat"
-        pattern="^\s*\d+([,.]\d+)?\s*$"
-        maxlength="12"
-        value="{{ spot.lat }}"
-        required/> N
-      <br><br>
-      <input
-        type="text"
-        name="lon"
-        pattern="^\s*\d+([,.]\d+)?\s*$"
-        maxlength="12"
-        value="{{ spot.lon }}"
-        required/> E
-    </p>
-    </p>
-    <p>
-      <label for="description">Kuvaus:</label> <br />
-      <textarea id="description" name="description" rows="8" cols="60" maxlength="1000">{{ spot.description }}</textarea>
-    </p>
-    <label for="category">Kategoria:</label>
-    <select id="category" name="category" required>
-      {% for cat in categories %}
-        <option value="{{ cat }}" {% if cat == spot.category %}selected{% endif %}>{{ cat }}</option>
-      {% endfor %}
-    </select>
-    <input type="hidden" name="spot_id" value="{{ spot.id }}" />
-    <input type="submit" name="cancel" value="Peruuta" formnovalidate/>
-    <input type="submit" value="Muokkaa kohdetta" />
-  </form>
-</body>
-
-</html>
+  </select>
+  <input type="hidden" name="spot_id" value="{{ spot.id }}" />
+  <input type="submit" name="cancel" value="Peruuta" formnovalidate/>
+  <input type="submit" value="Muokkaa kohdetta" />
+</form>
+{% endblock %}
