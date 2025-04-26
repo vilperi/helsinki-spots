@@ -57,8 +57,8 @@
 
 <form action="/add_comment" method="post">
   <p>
-    Kommentti:<br />
-    <textarea name="content" rows="5" cols="40" maxlength="500" required></textarea>
+    <label for="content">Kommentti: </label> <br />
+    <textarea id="content" name="content" rows="5" cols="40" maxlength="500" required></textarea>
   </p>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="hidden" name="spot_id" value="{{ spot.id }}" />

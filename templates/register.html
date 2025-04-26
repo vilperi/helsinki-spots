@@ -5,16 +5,16 @@
 {% block content %}
 <form action="/create_user" method="post">
   <p>
-    Tunnus: <br />
-    <input type="text" name="username" required/>
+    <label for="username">Käyttäjänimi: </label> <br />
+    <input type="text" id="username" name="username" required/>
   </p>
   <p>
-    Salasana: <br />
-    <input type="password" name="password1" required/>
+    <label for="password1">Salasana: </label> <br />
+    <input type="password" id="password1" name="password1" required/>
   </p>
   <p>
-    Salasana uudestaan: <br />
-    <input type="password" name="password2" required/>
+    <label for="password2">Salasana uudestaan: </label> <br />
+    <input type="password" id="password2" name="password2" required/>
   </p>
   <input type="submit" value="Luo tunnus" />
 </form>

@@ -7,9 +7,10 @@
 <a href="/">Takaisin</a>
 <form action="find_spot" method="get">
   <p>
-    Hakusana: <input type="text" value="{{ query }}" name="query">
+    <label for="query">Hakusana: </label>
+    <input type="text" value="{{ query }}" id="query" name="query">
   </p>
-  <label for="category">Kategoria:</label>
+  <label for="category">Kategoria: </label>
   <select id="category" name="category">
     <option value="all" selected>Kaikki</option>
     {% for cat in categories %}
