@@ -1,5 +1,6 @@
 import secrets
 import sqlite3
+import markupsafe
 import re
 
 from flask import Flask, abort, redirect, render_template, request, session, make_response, flash
@@ -18,7 +19,7 @@ categories = [
     "Baarit & Klubit",
     "Elävän musiikin paikat",
     "Historialliset kohteet",
-    "Hylätyt paikat",
+    "Hylätyt rakennukset",
     "Kahvilat & Pienpaahtimot",
     "Katutaide & Graffiti",
     "Kirppikset",
@@ -40,6 +41,12 @@ def check_csrf():
         abort(403)
     if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
+
+@app.template_filter()
+def show_lines(content):
+    content = str(markupsafe.escape(content))
+    content = content.replace("\n", "<br />")
+    return markupsafe.Markup(content)
 
 @app.route("/")
 def index():

@@ -16,7 +16,7 @@
 {% endfor %}
 <p>
   Kuvaus: <br />
-  {{ spot.description }}
+  {{ spot.description | show_lines }}
 </p>
 <p>
   Koordinaatit:
@@ -41,7 +41,7 @@
   <b><a href="/user/{{ spot.user_id }}">{{ comment.username }}</a></b> ({{ comment.sent_at }}):
 </p>
 <p>
-  {{ comment.content }}
+  {{ comment.content | show_lines }}
 </p>
 {% if comment.user_id == session.user_id %}
 <p>
