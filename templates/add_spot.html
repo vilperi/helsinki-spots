@@ -43,6 +43,7 @@
       <option value="{{ cat }}">{{ cat }}</option>
     {% endfor %}
   </select>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="submit" name="cancel" value="Peruuta" formnovalidate/>
   <input type="submit" name="add" value="Lisää kohde" />
 </form>

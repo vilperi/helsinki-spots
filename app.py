@@ -1,3 +1,4 @@
+import secrets
 import sqlite3
 import re
 
@@ -32,6 +33,12 @@ categories = [
 
 def require_login():
     if "user_id" not in session:
+        abort(403)
+
+def check_csrf():
+    if "csrf_token" not in request.form:
+        abort(403)
+    if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
 
 @app.route("/")
@@ -91,6 +98,7 @@ def check_coords(coord):
 @app.route("/remove_images", methods=["POST"])
 def remove_images():
     require_login()
+    check_csrf()
 
     spot_id = request.form["spot_id"]
     spot = spots.get_spot(spot_id)
@@ -128,6 +136,7 @@ def upload_images(files, spot_id):
 @app.route("/create_spot", methods=["POST"])
 def create_spot():
     require_login()
+    check_csrf()
 
     if "cancel" in request.form:
         return redirect("/")
@@ -177,6 +186,7 @@ def edit_spot(spot_id):
 @app.route("/update_spot", methods=["POST"])
 def update_spot():
     require_login()
+    check_csrf()
 
     if "cancel" in request.form:
         return redirect("/")
@@ -221,6 +231,8 @@ def update_spot():
 @app.route("/remove_spot/<int:spot_id>", methods=["GET", "POST"])
 def remove_spot(spot_id):
     require_login()
+
+
     spot = spots.get_spot(spot_id)
     if not spot:
         abort(404)
@@ -231,6 +243,7 @@ def remove_spot(spot_id):
         return render_template("remove_spot.html", spot=spot)
 
     if request.method == "POST":
+        check_csrf()
         if "remove" in request.form:
             spots.remove_spot(spot_id)
             return redirect("/")
@@ -239,6 +252,8 @@ def remove_spot(spot_id):
 @app.route("/add_comment", methods=["POST"])
 def add_comment():
     require_login()
+    check_csrf()
+
     spot_id = request.form["spot_id"]
     spot = spots.get_spot(spot_id)
     if not spot:
@@ -269,6 +284,7 @@ def edit_comment(comment_id):
     if request.method == "GET":
         return render_template("edit_comment.html", comment=comment)
     if request.method == "POST":
+        check_csrf()
         if "edit" in request.form:
             content = request.form["content"]
             if not content:
@@ -294,6 +310,7 @@ def remove_comment(comment_id):
         return render_template("remove_comment.html", comment=comment)
 
     if request.method == "POST":
+        check_csrf()
         if "remove" in request.form:
             spots.remove_comment(comment_id)
         return redirect("/spot/" + str(spot_id))
@@ -335,6 +352,7 @@ def login():
         if user_id:
             session["user_id"] = user_id
             session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
             flash("VIRHE: Väärä tunnus tai salasana")

@@ -59,6 +59,7 @@
     {% endfor %}
   </select>
   <input type="hidden" name="spot_id" value="{{ spot.id }}" />
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="submit" name="cancel" value="Peruuta" formnovalidate/>
   <input type="submit" value="Muokkaa kohdetta" />
 </form>
