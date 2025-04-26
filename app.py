@@ -1,7 +1,6 @@
 import secrets
 import sqlite3
 import markupsafe
-import re
 
 from flask import Flask, abort, redirect, render_template, request, session, make_response, flash
 
@@ -57,12 +56,13 @@ def index():
 @app.route("/user/<int:user_id>")
 def show_user(user_id):
     user = users.get_user(user_id)
-    spots = users.get_spots(user_id)
+    user_spots = users.get_spots(user_id)
     comment_count = users.count_comments(user_id)
     if not user:
         abort(404)
 
-    return render_template("/show_user.html", user=user, spots=spots, comment_count=comment_count)
+    return render_template("/show_user.html", user=user, spots=user_spots,
+                           comment_count=comment_count)
 
 @app.route("/find_spot")
 def find_spot():
@@ -71,7 +71,8 @@ def find_spot():
 
     results = spots.find_spots(query, category)
 
-    return render_template("find_spot.html", query=query, results=results, category=category, categories=categories)
+    return render_template("find_spot.html", query=query, results=results,
+                           category=category, categories=categories)
 
 @app.route("/spot/<int:spot_id>")
 def show_spot(spot_id):

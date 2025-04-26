@@ -1,10 +1,11 @@
-import sqlite3
-import db
 from werkzeug.security import generate_password_hash, check_password_hash
+
+import db
 
 def create_user(username, password):
     password_hash = generate_password_hash(password)
-    sql = "INSERT INTO users (username, created_at, password_hash) VALUES (?, datetime('now', 'localtime'), ?)"
+    sql = """INSERT INTO users (username, created_at, password_hash)
+             VALUES (?, datetime('now', 'localtime'), ?)"""
     db.execute(sql, [username, password_hash])
 
 def check_login(username, password):

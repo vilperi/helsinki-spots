@@ -3,7 +3,8 @@ import db
 
 def add_spot(name, lat, lon, description, category, user_id):
     try:
-        sql = "INSERT INTO spots (name, lat, lon, description, category, user_id) VALUES (?, ?, ?, ?, ?, ?)"
+        sql = """INSERT INTO spots (name, lat, lon, description, category, user_id)
+                 VALUES (?, ?, ?, ?, ?, ?)"""
         db.execute(sql, [name, lat, lon, description, category, user_id])
     except sqlite3.IntegrityError:
         return "VIRHE: Kohdetta ei voitu luoda"
@@ -99,7 +100,7 @@ def get_comment(comment_id):
     return result[0] if result else None
 
 def edit_comment(comment_id, content):
-    sql = """UPDATE comments 
+    sql = """UPDATE comments
              SET content = ?, sent_at = datetime('now', 'localtime')
              WHERE id = ?"""
     db.execute(sql, [content, comment_id])
