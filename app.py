@@ -1,8 +1,11 @@
 import secrets
 import sqlite3
 import markupsafe
+import math
+import time
 
-from flask import Flask, abort, redirect, render_template, request, session, make_response, flash
+from flask import Flask, abort, redirect, render_template
+from flask import request, session, make_response, flash, g
 
 import db
 import config
@@ -47,11 +50,32 @@ def show_lines(content):
     content = content.replace("\n", "<br />")
     return markupsafe.Markup(content)
 
-@app.route("/")
-def index():
-    all_spots = spots.get_spots()
+@app.before_request
+def before_request():
+    g.start_time = time.time()
 
-    return render_template("index.html", spots=all_spots)
+@app.after_request
+def after_request(response):
+    elapsed_time = round(time.time() - g.start_time, 2)
+    print("elapsed time:", elapsed_time, "s")
+    return response
+
+@app.route("/")
+@app.route("/<int:page>")
+def index(page=1):
+    page_size = 12
+    spot_count = spots.count_rows("spots")
+    page_count = math.ceil(spot_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/1")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+
+    all_spots = spots.get_spots(page, page_size)
+    return render_template("index.html", page=page,
+                           page_count=page_count, spots=all_spots)
 
 @app.route("/user/<int:user_id>")
 def show_user(user_id):
@@ -74,14 +98,25 @@ def find_spot():
     return render_template("find_spot.html", query=query, results=results,
                            category=category, categories=categories)
 
-@app.route("/spot/<int:spot_id>")
-def show_spot(spot_id):
+@app.route("/spot/<int:spot_id>/<int:page>")
+def show_spot(spot_id, page=1):
+    page_size = 2
+    comment_count = spots.count_comments(spot_id)
+    page_count = math.ceil(comment_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/spot" + "/" + str(spot_id) + "/1")
+    if page > page_count:
+        return redirect("/spot" + "/" + str(spot_id) + "/" + str(page_count))
+
     spot = spots.get_spot(spot_id)
     if not spot:
         abort(404)
-    comments = spots.get_comments(spot_id)
+    comments = spots.get_comments(spot_id, page, page_size)
     images = spots.get_images(spot_id)
-    return render_template("/show_spot.html", spot=spot, comments=comments, images=images)
+    return render_template("/show_spot.html", page=page, page_count=page_count,
+                           spot=spot, comments=comments, images=images)
 
 @app.route("/image/<int:image_id>")
 def show_image(image_id):
@@ -234,7 +269,7 @@ def update_spot():
 
     spots.update_spot(spot_id, name, lat, lon, description, category)
     upload_images(files, spot_id)
-    return redirect("/spot/" + str(spot_id))
+    return redirect("/spot/" + str(spot_id) + "/1")
 
 @app.route("/remove_spot/<int:spot_id>", methods=["GET", "POST"])
 def remove_spot(spot_id):
@@ -255,7 +290,7 @@ def remove_spot(spot_id):
         if "remove" in request.form:
             spots.remove_spot(spot_id)
             return redirect("/")
-        return redirect("/spot/" + str(spot_id))
+        return redirect("/spot/" + str(spot_id) + "/1")
 
 @app.route("/add_comment", methods=["POST"])
 def add_comment():
@@ -277,7 +312,7 @@ def add_comment():
     spots.add_comment(content, user_id, spot_id)
 
 
-    return redirect("/spot/" + str(spot_id))
+    return redirect("/spot/" + str(spot_id) + "/1")
 
 @app.route("/edit_comment/<int:comment_id>", methods=["GET", "POST"])
 def edit_comment(comment_id):
@@ -300,7 +335,7 @@ def edit_comment(comment_id):
             if len(content) > 500:
                 abort(403)
             spots.edit_comment(comment_id, content)
-        return redirect("/spot/" + str(spot_id))
+        return redirect("/spot/" + str(spot_id) + "/1")
 
 @app.route("/remove_comment/<int:comment_id>", methods=["GET", "POST"])
 def remove_comment(comment_id):
@@ -321,7 +356,7 @@ def remove_comment(comment_id):
         check_csrf()
         if "remove" in request.form:
             spots.remove_comment(comment_id)
-        return redirect("/spot/" + str(spot_id))
+        return redirect("/spot/" + str(spot_id) + "/1")
 
 @app.route("/register")
 def register():

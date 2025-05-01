@@ -33,3 +33,10 @@ CREATE TABLE images (
     image BLOB,
     FOREIGN KEY (spot_id) REFERENCES spots(id) ON DELETE CASCADE
 );
+
+CREATE INDEX idx_user_spots ON spots(user_id);
+CREATE INDEX idx_spot_category ON spots(category);
+CREATE INDEX idx_spot_name ON spots(name);
+CREATE INDEX idx_comments_spot ON comments(spot_id);
+CREATE INDEX idx_images_spot ON images(spot_id);
+CREATE INDEX idx_users_username ON users(username);

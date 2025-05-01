@@ -37,3 +37,11 @@ $ flask run
 ## Käyttöohjeet
 - Voit hakea koordinaatit kohteelle osoitteesta https://kartta.paikkatietoikkuna.fi/
   - Klikkaa oikeassa laidassa *XY* -painiketta. Klikkaa sen jälkeen kohteesi sijainti kartalta ja kopioi koordinaatit lomakkeelle.
+
+## Sovelluksen isojen tietomäärien käsittely
+- Sovellusta on testattu testidatalla seed.py tiedoston avulla, joka loi 10^6 kohdetta ja 10^7 kommenttia.
+- Parannukset, jotka tehtiin vastausnopeuksien nopeuttamiseksi:
+  1. Etusivun kohteiden ja kohdesivulla kommenttien sivuttaminen.
+  2. SQL-kyselyn parantaminen (yhdistelmätauluista alikyselyihin).
+  3. Tietokannan indeksointi
+- Ennen indeksointia etusivun lataamiseen meni 5,12 s. Indeksoinnin jälkeen se kesti 0,05 s.

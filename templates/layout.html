@@ -41,8 +41,15 @@
 
   <main>
     {% block content %}{% endblock %}
+    {% block spot_boxes %}{% endblock %}
   </main>
 
-  {% block index %}{% endblock %}
+  <div class="spot-pages">
+    {% block spot_pages %}{% endblock %}
+  </div>
+
+  <div class="comment-pages">
+    {% block comment_pages %}{% endblock %}
+  </div>
 </body>
 </html>

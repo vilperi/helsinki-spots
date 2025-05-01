@@ -13,21 +13,20 @@ def add_image(image, spot_id):
     sql = "INSERT INTO images (image, spot_id) VALUES (?, ?)"
     db.execute(sql, [image, spot_id])
 
-def get_spots():
-    sql = """SELECT s.id spot_id,
+def get_spots(page, page_size):
+    sql = """SELECT s.id AS spot_id,
                     s.name,
                     s.category,
-                    MIN(i.id) image_id,
+                    (SELECT MIN(i.id) FROM images i WHERE i.spot_id = s.id) AS image_id,
                     u.username,
-                    COUNT(DISTINCT c.id) comment_count
-            FROM spots s
-            LEFT JOIN images i ON i.spot_id = s.id
-            LEFT JOIN users u ON s.user_id = u.id
-            LEFT JOIN comments c ON c.spot_id = s.id
-            GROUP BY s.id, s.category, s.name, u.username
-            ORDER BY s.id DESC"""
-
-    return db.query(sql)
+                    (SELECT COUNT(*) FROM comments c WHERE c.spot_id = s.id) AS comment_count
+             FROM spots s
+             LEFT JOIN users u ON s.user_id = u.id
+             ORDER BY s.id DESC
+             LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = page_size * (page - 1)
+    return db.query(sql, [limit, offset])
 
 def get_spot(spot_id):
     sql = """SELECT s.id,
@@ -42,6 +41,18 @@ def get_spot(spot_id):
             WHERE s.user_id = u.id AND s.id = ?"""
     result = db.query(sql, [spot_id])
     return result[0] if result else None
+
+def get_test_spot(spot_id):
+    '''Tämä funktio on seed.py testitiedostolla
+    luodun kohteen hakemista varten'''
+    sql = """SELECT id, name FROM spots WHERE id = ?"""
+    result = db.query(sql, [spot_id])
+    return result[0] if result else None
+
+def count_rows(table: str):
+    sql = f"SELECT COUNT(id) FROM {table}"
+    result = db.query(sql)
+    return result[0][0] if result else None
 
 def filter_spots(category):
     sql = "SELECT id, name FROM spots WHERE category = ? ORDER BY id DESC"
@@ -85,12 +96,15 @@ def add_comment(content, user_id, spot_id):
              VALUES (?, datetime('now', 'localtime'), ?, ?)"""
     db.execute(sql, [content, user_id, spot_id])
 
-def get_comments(spot_id):
+def get_comments(spot_id, page, page_size):
     sql = """SELECT c.id, c.content, c.sent_at, c.user_id, u.username
             FROM comments c, users u
             WHERE c.user_id = u.id AND c.spot_id = ?
-            ORDER BY c.id DESC"""
-    return db.query(sql, [spot_id])
+            ORDER BY c.id DESC
+            LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = page_size * (page - 1)
+    return db.query(sql, [spot_id, limit, offset])
 
 def get_comment(comment_id):
     sql = """SELECT c.id, c.content, c.sent_at, c.user_id, c.spot_id, u.username
@@ -98,6 +112,11 @@ def get_comment(comment_id):
              WHERE c.user_id = u.id AND c.id = ?"""
     result = db.query(sql, [comment_id])
     return result[0] if result else None
+
+def count_comments(spot_id):
+    sql = "SELECT COUNT(id) FROM comments WHERE spot_id = ?"
+    result = db.query(sql, [spot_id])
+    return result[0][0] if result else None
 
 def edit_comment(comment_id, content):
     sql = """UPDATE comments

@@ -2,21 +2,30 @@
 
 {% block title %}Helsinki Spots{% endblock %}
 
-{% block index %}
-  <div class="spot-list">
-    {% for spot in spots %}
-      <a href="/spot/{{ spot.spot_id }}" class="spot-box-link">
-        <div class="spot-box {% if loop.index0 % 2 == 0 %}even{% else %}odd{% endif %}">
-          <img src="/image/{{ spot.image_id }}" alt="{{ spot.name }}">
-          <h3>{{ spot.name }}</h3>
-          <h4>Kategoria:</h4>
-          <p>{{ spot.category }}</p>
-          <h4>Tekijä:</h4>
-          <p>{{ spot.username }}</p>
-          <h4>Kommentteja:</h4>
-          <p>{{ spot.comment_count }}</p>
-        </div>
-      </a>
-    {% endfor %}
-  </div>
+{% block spot_boxes %}
+<div class="spot-list">
+  {% for spot in spots %}
+    <a href="/spot/{{ spot.spot_id }}/1" class="spot-box-link">
+      <div class="spot-box {% if loop.index0 % 2 == 0 %}even{% else %}odd{% endif %}">
+        <img src="/image/{{ spot.image_id }}" alt="{{ spot.name }}">
+        <h3>{{ spot.name }}</h3>
+        <h4>Kategoria:</h4>
+        <p>{{ spot.category }}</p>
+        <h4>Tekijä:</h4>
+        <p>{{ spot.username }}</p>
+        <h4>Kommentteja:</h4>
+        <p>{{ spot.comment_count }}</p>
+      </div>
+    </a>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block spot_pages %}
+<p>
+  <a href="/{{ page - 1 }}">&lt;&lt;</a>
+  Sivu {{ page }}/{{ page_count }}
+  <a href="/{{ page + 1 }}">&gt;&gt;</a>
+</p>
+<hr />
 {% endblock %}

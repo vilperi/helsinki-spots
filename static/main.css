@@ -75,7 +75,7 @@ h2 {
   font-family: sans-serif;
 }
 
-main {
+main > *:not(.spot-list) {
   margin: auto;
   max-width: 50em;
   font-family: sans-serif;
@@ -175,4 +175,9 @@ img {
   padding: 0.5em;
   background-color: blue;
   color: white;
+}
+
+.spot-pages, .comment-pages {
+  text-align: center;
+  border: 3 px black
 }

@@ -70,3 +70,12 @@
   <a href="/">Takaisin</a>
 </p>
 {% endblock %}
+
+{% block comment_pages %}
+<p>
+  <a href="/spot/{{ spot.id }}/{{ page - 1 }}">&lt;&lt;</a>
+  Sivu {{ page }}/{{ page_count }}
+  <a href="/spot/{{ spot.id }}/{{ page + 1 }}">&gt;&gt;</a>
+</p>
+<hr />
+{% endblock %}
