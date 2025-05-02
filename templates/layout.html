@@ -4,6 +4,7 @@
 <head>
   <title>{% block title %}{% endblock %}</title>
   <link rel="stylesheet" href="/static/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -15,7 +16,7 @@
       <nav class="top-links">
         <div class="left-links">
           {% if session.username %}
-            <p>Kirjautunut nimellä <a href="/user/{{ session.user_id }}">{{ session.username }}</a></p>
+            Kirjautunut nimellä <a href="/user/{{ session.user_id }}">{{ session.username }}</a>
             <a href="/logout">Kirjaudu ulos</a>
           {% else %}
             <a href="/login">Kirjaudu sisään</a>
@@ -31,15 +32,16 @@
         </div>
       </nav>
     </div>
-  </header>  
-
-  {% for message in get_flashed_messages() %}
-  <div class="info">
-    {{ message }}
-  </div>
-  {% endfor %}
+  </header>
 
   <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
     {% block content %}{% endblock %}
     {% block spot_boxes %}{% endblock %}
   </main>

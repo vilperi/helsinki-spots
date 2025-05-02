@@ -7,14 +7,18 @@
   {% for spot in spots %}
     <a href="/spot/{{ spot.spot_id }}/1" class="spot-box-link">
       <div class="spot-box {% if loop.index0 % 2 == 0 %}even{% else %}odd{% endif %}">
-        <img src="/image/{{ spot.image_id }}" alt="{{ spot.name }}">
         <h3>{{ spot.name }}</h3>
-        <h4>Kategoria:</h4>
-        <p>{{ spot.category }}</p>
-        <h4>Tekijä:</h4>
-        <p>{{ spot.username }}</p>
-        <h4>Kommentteja:</h4>
-        <p>{{ spot.comment_count }}</p>
+        <figure>
+          <img src="/image/{{ spot.image_id }}" alt="{{ spot.name }}">
+        </figure>
+        <div class="spot-box-text">
+          <h4>Kategoria:</h4>
+          <p>{{ spot.category }}</p>
+          <h4>Tekijä:</h4>
+          <p>{{ spot.username }}</p>
+          <h4>Kommentteja:</h4>
+          <p>{{ spot.comment_count }}</p>
+        </div>
       </div>
     </a>
   {% endfor %}

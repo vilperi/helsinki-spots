@@ -20,11 +20,26 @@
 <form action="/update_spot" method="post" enctype="multipart/form-data">
   <p>
     <label for="name">Kohteen nimi:</label> <br />
-    <input type="text" id="name" name="name" value="{{ spot.name }}" maxlength="50" required/>
+    <input
+    type="text"
+    id="name"
+    name="name"
+    value="{{ spot.name }}"
+    maxlength="50"
+    required/>
   </p>
   <p>
     <label for="image">Kuvat:<br>(Maksimikoko <strong>200 kt</strong>, hyväksytty tiedostomuoto <strong>.png</strong>)</label><br>
-    <input type="file" name="image" accept=".png" multiple/>
+    <input
+    type="file"
+    id ="image"
+    name="image"
+    accept=".png"
+    class="{% if errors.files %}error{% endif %}"
+    multiple/>
+    {% if errors.files %}
+      <span class="error-message">{{ errors.files }}</span>
+    {% endif %}
   </p>
   <p>
     <label for="lat">Koordinaatit (ETRS-TM35FIN):</label><br />
@@ -38,7 +53,11 @@
       pattern="^\s*\d+([,.]\d+)?\s*$"
       maxlength="12"
       value="{{ spot.lat }}"
+      class="{% if errors.lat %}error{% endif %}"
       required/> N
+    {% if errors.lat %}
+      <span class="error-message">{{ errors.lat }}</span>
+    {% endif %}
     <br><br>
     <input
       type="text"
@@ -46,7 +65,11 @@
       pattern="^\s*\d+([,.]\d+)?\s*$"
       maxlength="12"
       value="{{ spot.lon }}"
+      class="{% if errors.lon %}error{% endif %}"
       required/> E
+    {% if errors.lon %}
+      <span class="error-message">{{ errors.lon }}</span>
+    {% endif %}
   </p>
   </p>
   <p>

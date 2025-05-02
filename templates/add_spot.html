@@ -6,42 +6,65 @@
 <form action="/create_spot" method="post" enctype="multipart/form-data">
   <p>
     <label for="name">Kohteen nimi:</label> <br />
-    <input type="text" id="name" name="name" maxlength="50" required />
+    <input type="text" id="name" name="name" maxlength="50" value="{{ name or '' }}" required />
   </p>
   <p>
     <label for="image">Kuvat:<br>(Maksimikoko <strong>200 kt</strong>, hyväksytty tiedostomuoto <strong>.png</strong>)</label><br>
-    <input type="file" id ="image" name="image" accept=".png" multiple/>
+    <input
+      type="file"
+      id ="image"
+      name="image"
+      accept=".png"
+      value="{{ files or '' }}"
+      class="{% if errors.files %}error{% endif %}"
+      multiple
+    />
+    {% if errors.files %}
+      <span class="error-message">{{ errors.files }}</span>
+    {% endif %}
   </p>
   <p>
     <label for="lat">Koordinaatit (ETRS-TM35FIN):</label><br />
-    <li>Hae koordinaatit <a href="https://kartta.paikkatietoikkuna.fi/" target="_blank">Paikkatietoikkunasta</a></li>
-    <li>Pohjoiskoordinaatti on muotoa 6673710,116 </li>
-    <li>Itäkoordinaatti on muotoa 385809,798</li>
-    <li>Koordinaatteja, jotka eivät ole Helsingin (lähi)alueella, ei hyväksytä </li> <br>
+    <ul>
+      <li>Hae koordinaatit <a href="https://kartta.paikkatietoikkuna.fi/" target="_blank">Paikkatietoikkunasta</a></li>
+      <li>Pohjoiskoordinaatti on muotoa 6673710,116 </li>
+      <li>Itäkoordinaatti on muotoa 385809,798</li>
+      <li>Koordinaatteja, jotka eivät ole Helsingin (lähi)alueella, ei hyväksytä </li> <br>
+    </ul>
     <input
       type="text"
       id="lat"
       name="lat"
       pattern="^\s*\d+([,.]\d+)?\s*$"
       maxlength="12"
+      value="{{ lat or '' }}"
+      class="{% if errors.lat %}error{% endif %}"
       required/> N
+    {% if errors.lat %}
+      <span class="error-message">{{ errors.lat }}</span>
+    {% endif %}
     <br><br>
     <input
       type="text"
       name="lon"
       pattern="^\s*\d+([,.]\d+)?\s*$"
       maxlength="12"
+      value="{{ lon or '' }}"
+      class="{% if errors.lon %}error{% endif %}"
       required/> E
+    {% if errors.lon %}
+      <span class="error-message">{{ errors.lon }}</span>
+    {% endif %}
   </p>
   <p>
     <label for="description">Kuvaus:</label> <br />
-    <textarea id="description" name="description" rows="8" cols="60" maxlength="1000"></textarea>
+    <textarea id="description" name="description" rows="8" cols="60" maxlength="1000" value="{{ description or '' }}"></textarea>
   </p>
   <label for="category">Kategoria:</label>
   <select id="category" name="category" required>
     <option value="" disabled selected hidden>Valitse kategoria</option>
     {% for cat in categories %}
-      <option value="{{ cat }}">{{ cat }}</option>
+      <option value="{{ cat }}" {% if cat == category %}selected{% endif %}>{{ cat }}</option>
     {% endfor %}
   </select>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />

@@ -100,7 +100,7 @@ def find_spot():
 
 @app.route("/spot/<int:spot_id>/<int:page>")
 def show_spot(spot_id, page=1):
-    page_size = 2
+    page_size = 10
     comment_count = spots.count_comments(spot_id)
     page_count = math.ceil(comment_count / page_size)
     page_count = max(page_count, 1)
@@ -158,16 +158,16 @@ def remove_images():
 @app.route("/add_spot")
 def add_spot():
     require_login()
-    return render_template("add_spot.html", categories=categories)
+    return render_template("add_spot.html", categories=categories, errors=None)
 
-def check_images(files):
+def check_images(files, errors: dict):
     for file in files:
         if file:
             if not file.filename.endswith(".png"):
-                abort(400, "Väärä tiedostomuoto")
+                errors["files"] = "Väärä tiedostomuoto"
             image = file.read()
             if len(image) > 200 * 1024:
-                abort(400, "Liian iso tiedosto")
+                errors["files"] = "Liian iso tiedosto"
             file.seek(0)
 
 def upload_images(files, spot_id):
@@ -181,6 +181,7 @@ def create_spot():
     require_login()
     check_csrf()
 
+    errors = {}
     if "cancel" in request.form:
         return redirect("/")
     name = request.form["name"]
@@ -197,21 +198,33 @@ def create_spot():
         abort(403)
     if not 6662022 < lat < 6694637:
         users.wrong_coords(user_id)
-        flash("Pohjoiskoordinaatti väärin")
-        return redirect("/add_spot")
+        errors["lat"] = "Pohjoiskoordinaatti on virheellinen"
     if not 360828 < lon < 410820:
         users.wrong_coords(user_id)
-        flash("Itäkoordinaatti väärin")
-        return redirect("/add_spot")
+        errors["lon"] = "Itäkoordinaatti on virheellinen"
     if len(name) > 50 or len(description) > 1000:
         abort(403)
     if category not in categories:
         abort(403)
+    check_images(files, errors)
 
-    check_images(files)
+    if errors:
+        flash("Tarkista syöte", "error-message")
+        return render_template(
+            "add_spot.html",
+            categories=categories,
+            name=name,
+            lat=lat,
+            lon=lon,
+            description=description,
+            category=category,
+            errors=errors,
+        )
+
     spots.add_spot(name, lat, lon, description, category, user_id)
     spot_id = db.last_insert_id()
     upload_images(files, spot_id)
+    flash("Uusi kohde luotu", "info")
     return redirect("/")
 
 @app.route("/edit_spot/<int:spot_id>")
@@ -224,18 +237,20 @@ def edit_spot(spot_id):
     if spot["user_id"] != session["user_id"]:
         abort(403)
 
-    return render_template("edit_spot.html", spot=spot, categories=categories, images=images)
+    return render_template("edit_spot.html", spot=spot, categories=categories, images=images, errors=None)
 
 @app.route("/update_spot", methods=["POST"])
 def update_spot():
     require_login()
     check_csrf()
 
+    errors = {}
     if "cancel" in request.form:
         return redirect("/")
 
     spot_id = request.form["spot_id"]
     spot = spots.get_spot(spot_id)
+    images = spots.get_images(spot_id)
     if not spot:
         abort(404)
     if spot["user_id"] != session["user_id"]:
@@ -255,17 +270,25 @@ def update_spot():
         abort(403)
     if not 6662022 < lat < 6694637:
         users.wrong_coords(user_id)
-        flash("Pohjoiskoordinaatti väärin")
-        return redirect("edit_spot/" + str(spot_id))
+        errors["lat"] = "Pohjoiskoordinaatti on virheellinen"
     if not 360828 < lon < 410820:
-        flash("Itäkoordinaatti väärin")
-        return redirect("edit_spot/" + str(spot_id))
+        users.wrong_coords()
+        errors["lon"] = "Itäkoordinaatti on virheellinen"
     if len(name) > 50 or len(description) > 1000:
         abort(403)
     if category not in categories:
         abort(403)
+    check_images(files, errors)
 
-    check_images(files)
+    if errors:
+        flash("Tarkista syöte", "error-message")
+        return render_template(
+            "edit_spot.html",
+            spot=spot,
+            categories=categories,
+            images=images,
+            errors=errors
+        )
 
     spots.update_spot(spot_id, name, lat, lon, description, category)
     upload_images(files, spot_id)
@@ -370,15 +393,15 @@ def create():
     if not username or not password1 or not password2:
         abort(403)
     if password1 != password2:
-        flash("VIRHE: Salasanat eivät ole samat")
+        flash("VIRHE: Salasanat eivät ole samat", "error-message")
         return redirect("/register")
     try:
         users.create_user(username, password1)
     except sqlite3.IntegrityError:
-        flash("VIRHE: Tunnus on jo varattu")
+        flash("VIRHE: Tunnus on jo varattu", "error-message")
         return redirect("/register")
 
-    flash("Tunnus luotu")
+    flash("Tunnus luotu", "info")
     return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -398,7 +421,7 @@ def login():
             session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
-            flash("VIRHE: Väärä tunnus tai salasana")
+            flash("VIRHE: Väärä tunnus tai salasana", "error-message")
             return redirect("/login")
 
 @app.route("/logout")
