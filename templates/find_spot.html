@@ -3,34 +3,60 @@
 {% block title %}Etsi kohde{% endblock %}
 
 {% block content %}
-<h1>Etsi kohde</h1>
-<a href="/">Takaisin</a>
-<form action="find_spot" method="get">
-  <p>
-    <label for="query">Hakusana: </label>
-    <input type="text" value="{{ query }}" id="query" name="query">
-  </p>
-  <label for="category">Kategoria: </label>
-  <select id="category" name="category">
-    <option value="all" selected>Kaikki</option>
-    {% for cat in categories %}
-      <option value="{{ cat }}" {% if category == cat %} selected {% endif %}>{{ cat }}</option>
-    {% endfor %}
-  </select>
-  <input type="submit" value="Hae">
-</form>
-
+  <h2>Etsi kohde</h2>
+  <a href="/">Takaisin</a>
+  <form action="/find_spot/{{ page }}" method="get">
+    <p>
+      <label for="query">Hakusana: </label>
+      <input type="text" value="{{ query }}" id="query" name="query">
+    </p>
+    <label for="category">Kategoria: </label>
+    <select id="category" name="category">
+      <option value="all" selected>Kaikki</option>
+      {% for cat in categories %}
+        <option value="{{ cat }}" {% if category == cat %} selected {% endif %}>{{ cat }}</option>
+      {% endfor %}
+    </select>
+    <input type="submit" value="Hae">
+  </form>
 
 {% if query or category %}
   {% if results %}
-    <h2>Tulokset</h2>
-    <ul>
+    <div class="spot-list">
       {% for spot in results %}
-        <li><a href="/spot/{{ spot.id }}">{{ spot.name }}</a></li>
+        <a href="/spot/{{ spot.spot_id }}/1" class="spot-box-link">
+          <div class="spot-box {% if loop.index0 % 2 == 0 %}even{% else %}odd{% endif %}">
+            <h3>{{ spot.name }}</h3>
+            <figure>
+              <img src="/image/{{ spot.image_id }}" alt="{{ spot.name }}">
+            </figure>
+            <div class="spot-box-text">
+              <h4>Kategoria:</h4>
+              <p>{{ spot.category }}</p>
+              <h4>Tekijä:</h4>
+              <p>{{ spot.username }}</p>
+              <h4>Kommentteja:</h4>
+              <p>{{ spot.comment_count }}</p>
+            </div>
+          </div>
+        </a>
       {% endfor %}
-    </ul>
+    </div>
   {% else %}
     <h2>Ei tuloksia</h2>
   {% endif %}
 {% endif %}
+{% endblock %}
+
+{% block spot_pages %}
+<p>
+  {% if page > 1 %}
+  <a href="/find_spot/{{ page - 1 }}?query={{ query }}&category={{ category }}">&lt;&lt;</a>
+  {% endif %}
+  Sivu {{ page }}/{{ page_count }}
+  {% if page < page_count %}
+  <a href="/find_spot/{{ page + 1 }}?query={{ query }}&category={{ category }}">&gt;&gt;</a>
+  {% endif %}
+</p>
+<hr />
 {% endblock %}

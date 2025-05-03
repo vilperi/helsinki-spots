@@ -88,15 +88,29 @@ def show_user(user_id):
     return render_template("/show_user.html", user=user, spots=user_spots,
                            comment_count=comment_count)
 
-@app.route("/find_spot")
-def find_spot():
+@app.route("/find_spot/<int:page>")
+def find_spot(page=1):
+    page_size = 12
     query = request.args.get("query", "")
     category = request.args.get("category", "")
+    results = spots.find_spots(query, category, page, page_size)
 
-    results = spots.find_spots(query, category)
+    if results:
+        spot_count = results[0]["spot_count"]
+        print(spot_count, "ASDASFASFASFAS")
+    else:
+        spot_count = 0
+    page_count = math.ceil(spot_count / page_size)
+    page_count = max(page_count, 1)
+    print(page_count)
 
-    return render_template("find_spot.html", query=query, results=results,
-                           category=category, categories=categories)
+    if page < 1:
+        return redirect("/find_spot/1")
+    if page > page_count:
+        return redirect("/find_spot/" + str(page_count))
+
+    return render_template("find_spot.html", query=query, results=results, category=category,
+                           categories=categories, page=page, page_size=page_size, page_count=page_count)
 
 @app.route("/spot/<int:spot_id>/<int:page>")
 def show_spot(spot_id, page=1):
@@ -429,4 +443,5 @@ def logout():
     if "user_id" in session:
         del session["user_id"]
         del session["username"]
+        del session["csrf_token"]
     return redirect("/")

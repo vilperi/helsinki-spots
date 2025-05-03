@@ -20,7 +20,7 @@
       multiple
     />
     {% if errors.files %}
-      <span class="error-message">{{ errors.files }}</span>
+      <span class="notice">{{ errors.files }}</span>
     {% endif %}
   </p>
   <p>
@@ -41,7 +41,7 @@
       class="{% if errors.lat %}error{% endif %}"
       required/> N
     {% if errors.lat %}
-      <span class="error-message">{{ errors.lat }}</span>
+      <span class="notice">{{ errors.lat }}</span>
     {% endif %}
     <br><br>
     <input
@@ -53,7 +53,7 @@
       class="{% if errors.lon %}error{% endif %}"
       required/> E
     {% if errors.lon %}
-      <span class="error-message">{{ errors.lon }}</span>
+      <span class="notice">{{ errors.lon }}</span>
     {% endif %}
   </p>
   <p>

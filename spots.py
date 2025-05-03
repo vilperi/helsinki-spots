@@ -19,7 +19,8 @@ def get_spots(page, page_size):
                     s.category,
                     (SELECT MIN(i.id) FROM images i WHERE i.spot_id = s.id) AS image_id,
                     u.username,
-                    (SELECT COUNT(*) FROM comments c WHERE c.spot_id = s.id) AS comment_count
+                    (SELECT COUNT(*) FROM comments c WHERE c.spot_id = s.id) AS comment_count,
+                    (SELECT COUNT(*) FROM spots) AS spot_count
              FROM spots s
              LEFT JOIN users u ON s.user_id = u.id
              ORDER BY s.id DESC
@@ -50,33 +51,62 @@ def get_test_spot(spot_id):
     return result[0] if result else None
 
 def count_rows(table: str):
-    sql = f"SELECT COUNT(id) FROM {table}"
+    sql = f"SELECT COUNT(*) FROM {table}"
     result = db.query(sql)
     return result[0][0] if result else None
 
-def filter_spots(category):
-    sql = "SELECT id, name FROM spots WHERE category = ? ORDER BY id DESC"
-    return db.query(sql, [category])
+def filter_spots(category, limit, offset):
+    sql = """SELECT s.id AS spot_id,
+                    s.name,
+                    s.category,
+                    (SELECT MIN(i.id) FROM images i WHERE i.spot_id = s.id) AS image_id,
+                    u.username,
+                    (SELECT COUNT(*) FROM comments c WHERE c.spot_id = s.id) AS comment_count,
+                    (SELECT COUNT(*) FROM spots WHERE category = ?) AS spot_count
+            FROM spots s
+            LEFT JOIN users u ON s.user_id = u.id
+            WHERE category = ?
+            ORDER BY s.id DESC
+            LIMIT ? OFFSET ?"""
+    return db.query(sql, [category, category, limit, offset])
 
-def find_spots(keyword, category):
+def find_spots(keyword, category, page, page_size):
+    limit = page_size
+    offset = page_size * (page - 1)
     if not keyword:
         if category == "all":
-            return get_spots()
+            return get_spots(page, page_size)
         else:
-            return filter_spots(category)
+            return filter_spots(category, limit, offset)
     like = "%" + keyword + "%"
     if category == "all":
-        sql = """SELECT id, name
-                FROM spots 
+        sql = """SELECT s.id AS spot_id,
+                        s.name,
+                        s.category,
+                        (SELECT MIN(i.id) FROM images i WHERE i.spot_id = s.id) AS image_id,
+                        u.username,
+                        (SELECT COUNT(*) FROM comments c WHERE c.spot_id = s.id) AS comment_count,
+                        (SELECT COUNT(*) FROM spots WHERE name LIKE ?) AS spot_count
+                FROM spots s
+                LEFT JOIN users u ON s.user_id = u.id
                 WHERE name LIKE ?
-                ORDER BY id DESC"""
-        return db.query(sql, [like])
+                ORDER BY s.id DESC
+                LIMIT ? OFFSET ?"""
+        return db.query(sql, [like, like, limit, offset])
     else:
-        sql = """SELECT id, name
-                FROM spots
+        sql = """SELECT s.id AS spot_id,
+                        s.name,
+                        s.category,
+                        (SELECT MIN(i.id) FROM images i WHERE i.spot_id = s.id) AS image_id,
+                        u.username,
+                        (SELECT COUNT(*) FROM comments c WHERE c.spot_id = s.id) AS comment_count,
+                        (SELECT COUNT(*) FROM spots WHERE name LIKE ? AND category = ?) AS spot_count
+                FROM spots s
+                LEFT JOIN users u ON s.user_id = u.id
                 WHERE name LIKE ? AND category = ?
-                ORDER BY id DESC"""
-        return db.query(sql, [like, category])
+                ORDER BY s.id DESC
+                LIMIT ? OFFSET ?"""
+        return db.query(sql, [like, category, like, category, limit, offset])
 
 def update_spot(spot_id, name, lat, lon, description, category):
     sql = """UPDATE spots SET name = ?,
@@ -114,7 +144,7 @@ def get_comment(comment_id):
     return result[0] if result else None
 
 def count_comments(spot_id):
-    sql = "SELECT COUNT(id) FROM comments WHERE spot_id = ?"
+    sql = "SELECT COUNT(*) FROM comments WHERE spot_id = ?"
     result = db.query(sql, [spot_id])
     return result[0][0] if result else None
 
