@@ -10,12 +10,17 @@ html, body {
   overflow: auto;
   display: flex;
   flex-direction: column;
+  font-family: 'Urbanist', 'Segoe UI', 'Helvetica Neue', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, ol {
+  margin: 0;
+  padding: 0;
 }
 
 header {
   background: #9FC9EB;
   color: rgb(0, 0, 0);
-  font-family: sans-serif;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -43,6 +48,7 @@ header {
 }
 
 .top-links {
+  font-size: 1em;
   display: flex;
   justify-content: space-between; /* Push left & right apart */
   align-items: center;
@@ -64,33 +70,6 @@ header {
   font-weight: bold;
 }
 
-h1 {
-  margin: 0;
-  padding: 10px;
-}
-
-h2 {
-  margin: 20px;
-  font-size: 24px;
-  font-family: sans-serif;
-}
-
-main > *:not(.spot-list) {
-  margin: auto;
-  max-width: 50em;
-  font-family: sans-serif;
-}
-
-ul {
-  list-style-type: none;
-  margin: 20px;
-  padding: 0;
-}
-
-li {
-  margin-bottom: 10px;
-}
-
 a {
   text-decoration: none;
   color: blue;
@@ -101,7 +80,7 @@ a:hover {
   text-decoration: underline;
 }
 
-a:visited {
+a:visited{
   color: purple;
 }
 
@@ -109,19 +88,101 @@ a:visited {
   color: #000000; /* Keeps the color black for top links */
 }
 
-img {
-  width: 300px;
-  margin: 10px;
+.spot-list a p, .spot-list a h4 {
+  text-decoration: none;
+  color: inherit
+}
+
+.spot-list a p:visited, .spot-list a h4:visited {
+  color: inherit;
+}
+
+.spot-list a:hover {
+  text-decoration: none;
+}
+
+main > *:not(.spot-list) {
+  margin: 2em auto;
+  max-width: fit-content;
+}
+
+main h1, h2 {
+  display: block;
+  margin: auto;
+  max-width: 50em;
+  text-align: center;
+}
+
+#new-comment {
+  margin: auto;
+
+}
+
+.image-container {
+  margin: auto;
+  max-width: 50em;
+}
+
+.image-container img {
+  max-width: 300px;        /* Ensures the image scales within the container */
+  height: auto;           /* Maintains the aspect ratio */
+  border-radius: 10px;    /* Optional: Adds rounded corners */
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow */
+}
+
+#edit-images {
+  margin: 1em 44.5em;
+}
+
+.image-container img:hover {
+  transform: scale(1.01);
+}
+
+p {
+  margin: 1em 0;
+}
+
+ul {
+  list-style-type: circle;
+  list-style-position: inside;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+.comment-box.even {
+  max-width: 40em;
+  margin: 0.5em auto;
+  background-color: #e8f0fe;
+  border-color: #000000;
+  border-width: 1px;
+  border-style: solid;
+  width: 40em;
+  padding: 3px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.comment-box.odd {
+  max-width: 40em;
+  margin: 0.5em auto;
+  background-color: #fef7e8;
+  border-color:#000000;
+  border-width: 1px;
+  border-style: solid;
+  width: 40em;
+  padding: 3px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .spot-list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 350px);
+  justify-content: center;
   gap: 20px;
-  padding: 20px;
-  justify-content: flex-start; /* Aligns every row to the left */
-  max-width: 1200px;           /* Optional: limits total width */
-  margin: 0 auto;              /* Optional: centers entire block */
+  padding: 2em;
 }
 
 .spot-box-link {
@@ -130,18 +191,24 @@ img {
 }
 
 .spot-box {
-  width: 250px;
+  width: 350px;
   height: 500px;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-  font-family: sans-serif;
 }
 
-.spot-box img {
+.spot-list figure {
+  height: 250px;
+  overflow: hidden;
+}
+
+.spot-list img {
   width: 100%;
-  height: auto;
-  border-radius: 5px;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+  border-radius: 10px;
 }
 
 .spot-box p {
@@ -169,6 +236,11 @@ img {
   font-weight:900;
 }
 
+.spot-pages, .comment-pages {
+  text-align: center;
+  border: 3 px black
+}
+
 .info {
   border: 2px solid black;
   margin: 1em;
@@ -177,7 +249,24 @@ img {
   color: white;
 }
 
-.spot-pages, .comment-pages {
-  text-align: center;
-  border: 3 px black
+.error {
+  border: 2px solid red;
+  background-color: #ffe6e6;
+}
+
+.error-message {
+  border: 2px solid black;
+  margin: 1em;
+  padding: 0.5em;
+  background-color: red;
+  color: white;
+}
+
+.notice {
+  color: red;
+  font-weight:600;
+}
+
+#new-comment {
+  margin-top: 3em;
 }

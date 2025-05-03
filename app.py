@@ -63,7 +63,7 @@ def after_request(response):
 @app.route("/")
 @app.route("/<int:page>")
 def index(page=1):
-    page_size = 12
+    page_size = 20
     spot_count = spots.count_rows("spots")
     page_count = math.ceil(spot_count / page_size)
     page_count = max(page_count, 1)
@@ -90,7 +90,7 @@ def show_user(user_id):
 
 @app.route("/find_spot/<int:page>")
 def find_spot(page=1):
-    page_size = 12
+    page_size = 20
     query = request.args.get("query", "")
     category = request.args.get("category", "")
     results = spots.find_spots(query, category, page, page_size)
@@ -180,7 +180,7 @@ def check_images(files, errors: dict):
             if not file.filename.endswith(".png"):
                 errors["files"] = "Väärä tiedostomuoto"
             image = file.read()
-            if len(image) > 200 * 1024:
+            if len(image) > 500 * 1024:
                 errors["files"] = "Liian iso tiedosto"
             file.seek(0)
 

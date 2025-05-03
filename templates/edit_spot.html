@@ -4,10 +4,14 @@
 
 {% block content %}
 {% if images %}
-<form action="/remove_images" method="post">
+<form action="/remove_images" method="post" id="edit-images">
   {% for image in images %}
-  <input type="checkbox" name="image_id" value="{{ image.id }}">
-  <img src="/image/{{ image.id }}" alt="Ilmoituksen kuva" />
+  <label for="{{ image.id }}" class="image-label">
+    <input type="checkbox" name="image_id" id="{{ image.id }}" value="{{ image.id }}">
+    <div class="image-container">
+      <img src="/image/{{ image.id }}" alt="Ilmoituksen kuva" />
+    </div>
+  </label>
   <br />
   {% endfor %}
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
@@ -25,12 +29,13 @@
     type="text"
     id="name"
     name="name"
+    size="25"
     value="{{ spot.name }}"
     maxlength="50"
     required/>
   </p>
   <p>
-    <label for="image">Kuvat:<br>(Maksimikoko <strong>200 kt</strong>, hyväksytty tiedostomuoto <strong>.png</strong>)</label><br>
+    <label for="image">Kuvat:<br>(Maksimikoko <strong>500 kt</strong>, hyväksytty tiedostomuoto <strong>.png</strong>)</label><br>
     <input
     type="file"
     id ="image"
@@ -44,9 +49,12 @@
   </p>
   <p>
     <label for="lat">Koordinaatit (ETRS-TM35FIN):</label><br />
-    <li>Pohjoiskoordinaatti on muotoa 6673710,116 </li>
-    <li>Itäkoordinaatti on muotoa 385809,798</li>
-    <li>Koordinaatteja, jotka eivät ole Helsingin (lähi)alueella, ei hyväksytä </li> <br>
+    <ul>
+      <li>Hae koordinaatit <a href="https://kartta.paikkatietoikkuna.fi/" target="_blank">Paikkatietoikkunasta</a></li>
+      <li>Pohjoiskoordinaatti on muotoa 6673710,116 </li>
+      <li>Itäkoordinaatti on muotoa 385809,798</li>
+      <li>Koordinaatteja, jotka eivät ole Helsingin (lähi)alueella, ei hyväksytä </li> <br>
+    </ul>
     <input
       type="text"
       id="lat"

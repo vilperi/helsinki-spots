@@ -12,53 +12,56 @@
 </p>
 {% endif %}
 {% for image in images %}
-<img src="/image/{{ image.id }}" alt="Ilmoituksen kuva" />
+<div class="image-container">
+  <a href="/image/{{ image.id }}" target="_blank">
+    <img src="/image/{{ image.id }}" alt="Ilmoituksen kuva"/>
+  </a>
+</div>
 {% endfor %}
+<h4>Kuvaus:</h4>
 <p>
-  Kuvaus: <br />
   {{ spot.description | show_lines }}
 </p>
+<h4>Koordinaatit:</h4>
 <p>
-  Koordinaatit:
-  {{ spot.lat }} N {{ spot.lon}} E
+  {{ spot.lat }} N <br>
+  {{ spot.lon}} E
 </p>
+<h4>Kategoria: </h4>
 <p>
-  Kategoria: {{ spot.category }}
+  {{ spot.category }}
 </p>
+<h4>Tekijä:</h4>
 <p>
-  Tekijä: <a href="/user/{{ spot.user_id }}">{{ spot.username }}</a>
-</p>
-<p>
-  <a href="/">Takaisin</a>
+  <a href="/user/{{ spot.user_id }}">{{ spot.username }}</a>
 </p>
 
-<hr />
-<p>
-  <h2>Kommentit</h2>
-</p>
+<h2>Kommentit</h2>
 {% for comment in comments %}
-<p>
-  <b><a href="/user/{{ spot.user_id }}">{{ comment.username }}</a></b> ({{ comment.sent_at }}):
-</p>
-<p>
-  {{ comment.content | show_lines }}
-</p>
-{% if comment.user_id == session.user_id %}
-<p>
-  <a href="/edit_comment/{{ comment.id }}">Muokkaa</a> |
-  <a href="/remove_comment/{{ comment.id }}">Poista</a>
-</p>
-{% endif %}
-<hr />
+<div class="comment-box {% if loop.index0 % 2 == 0 %}even{% else %}odd{% endif %}">
+  <p>
+    <b><a href="/user/{{ spot.user_id }}">{{ comment.username }}</a></b> ({{ comment.sent_at }}):
+  </p>
+  <p>
+    {{ comment.content | show_lines }}
+  </p>
+  {% if comment.user_id == session.user_id %}
+  <p>
+    <a href="/edit_comment/{{ comment.id }}">Muokkaa</a> |
+    <a href="/remove_comment/{{ comment.id }}">Poista</a>
+  </p>
+  {% endif %}
+</div>
 {% endfor %}
 
 {% if session.user_id %}
-<h3>Uusi kommentti</h3>
-
+<div id="new-comment">
+  <h3>Uusi kommentti</h3>
+</div>
 <form action="/add_comment" method="post">
   <p>
     <label for="content">Kommentti: </label> <br />
-    <textarea id="content" name="content" rows="5" cols="40" maxlength="500" required></textarea>
+    <textarea id="content" name="content" rows="8" cols="60" maxlength="500" required></textarea>
   </p>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="hidden" name="spot_id" value="{{ spot.id }}" />
@@ -73,9 +76,13 @@
 
 {% block comment_pages %}
 <p>
+  {% if page > 1 %}
   <a href="/spot/{{ spot.id }}/{{ page - 1 }}">&lt;&lt;</a>
+  {% endif %}
   Sivu {{ page }}/{{ page_count }}
+  {% if page < page_count %}
   <a href="/spot/{{ spot.id }}/{{ page + 1 }}">&gt;&gt;</a>
+  {% endif %}
 </p>
 <hr />
 {% endblock %}
