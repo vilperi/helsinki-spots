@@ -73,7 +73,6 @@ header {
 a {
   text-decoration: none;
   color: blue;
-  font-weight: bold;
 }
 
 a:hover {
@@ -119,8 +118,10 @@ main h1, h2 {
 }
 
 .image-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
   margin: auto;
-  max-width: 50em;
 }
 
 .image-container img {
@@ -159,7 +160,7 @@ li {
   border-width: 1px;
   border-style: solid;
   width: 40em;
-  padding: 3px;
+  padding: 3px 10px;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
@@ -172,7 +173,7 @@ li {
   border-width: 1px;
   border-style: solid;
   width: 40em;
-  padding: 3px;
+  padding: 3px 10px;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
@@ -269,4 +270,30 @@ li {
 
 #new-comment {
   margin-top: 3em;
+}
+
+.username-password {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.username-password input[type=text], .username-password input[type=password] {
+  width: 95%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.username-password input[type=submit] {
+  padding: 16px 32px;
+  margin: 4px 2px;
+  width: 95%;
+  cursor: pointer;
+}
+
+#spot-container {
+  max-width: 50em;
+  text-align: center;
 }

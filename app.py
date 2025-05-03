@@ -286,7 +286,7 @@ def update_spot():
         users.wrong_coords(user_id)
         errors["lat"] = "Pohjoiskoordinaatti on virheellinen"
     if not 360828 < lon < 410820:
-        users.wrong_coords()
+        users.wrong_coords(user_id)
         errors["lon"] = "Itäkoordinaatti on virheellinen"
     if len(name) > 50 or len(description) > 1000:
         abort(403)

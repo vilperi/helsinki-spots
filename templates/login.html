@@ -11,17 +11,19 @@
   <a href="/logout">Kirjaudu ulos</a>
 </p>
 {% else %}
-<form action="/login" method="post">
-  <p>
-    <label for="username">Käyttäjänimi:</label> <br />
-    <input type="text" id="username" name="username" required/>
-  </p>
-  <p>
-    <label for="password">Salasana:</label> <br />
-    <input type="password" id="password" name="password" required/>
-  </p>
-  <input type="submit" value="Kirjaudu" />
-</form>
+<div class="username-password">
+  <form action="/login" method="post">
+    <p>
+      <label for="username">Käyttäjänimi:</label> <br />
+      <input type="text" id="username" name="username" required/>
+    </p>
+    <p>
+      <label for="password">Salasana:</label> <br />
+      <input type="password" id="password" name="password" required/>
+    </p>
+    <input type="submit" value="Kirjaudu" />
+  </form>
+</div>
 {% endif %}
 <p>
   <a href="/">Takaisin</a>

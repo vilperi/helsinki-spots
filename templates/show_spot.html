@@ -11,31 +11,32 @@
   <a href="/remove_spot/{{ spot.id }}">Poista</a>
 </p>
 {% endif %}
-{% for image in images %}
 <div class="image-container">
+{% for image in images %}
   <a href="/image/{{ image.id }}" target="_blank">
     <img src="/image/{{ image.id }}" alt="Ilmoituksen kuva"/>
   </a>
-</div>
 {% endfor %}
-<h4>Kuvaus:</h4>
-<p>
-  {{ spot.description | show_lines }}
-</p>
-<h4>Koordinaatit:</h4>
-<p>
-  {{ spot.lat }} N <br>
-  {{ spot.lon}} E
-</p>
-<h4>Kategoria: </h4>
-<p>
-  {{ spot.category }}
-</p>
-<h4>Tekijä:</h4>
-<p>
-  <a href="/user/{{ spot.user_id }}">{{ spot.username }}</a>
-</p>
-
+</div>
+<div id="spot-container">
+  <h4>Kuvaus:</h4>
+  <p>
+    {{ spot.description | show_lines }}
+  </p>
+  <h4>Koordinaatit:</h4>
+  <p>
+    {{ spot.lat }} N <br>
+    {{ spot.lon}} E
+  </p>
+  <h4>Kategoria: </h4>
+  <p>
+    {{ spot.category }}
+  </p>
+  <h4>Tekijä:</h4>
+  <p>
+    <a href="/user/{{ spot.user_id }}"><b>{{ spot.username }}</b></a>
+  </p>
+</div>
 <h2>Kommentit</h2>
 {% for comment in comments %}
 <div class="comment-box {% if loop.index0 % 2 == 0 %}even{% else %}odd{% endif %}">

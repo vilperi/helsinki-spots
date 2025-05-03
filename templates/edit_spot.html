@@ -4,15 +4,12 @@
 
 {% block content %}
 {% if images %}
-<form action="/remove_images" method="post" id="edit-images">
+<form action="/remove_images" method="post" class="image-container">
   {% for image in images %}
   <label for="{{ image.id }}" class="image-label">
     <input type="checkbox" name="image_id" id="{{ image.id }}" value="{{ image.id }}">
-    <div class="image-container">
-      <img src="/image/{{ image.id }}" alt="Ilmoituksen kuva" />
-    </div>
+    <img src="/image/{{ image.id }}" alt="Ilmoituksen kuva" />
   </label>
-  <br />
   {% endfor %}
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
   <input type="hidden" name="spot_id" value="{{ spot.id }}">
