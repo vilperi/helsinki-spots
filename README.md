@@ -2,6 +2,7 @@
 
 Tämä sovellus on tarkoitettu mielenkiintoisten kaupunkikohteiden listaamisen Helsingissä. Kohde voi olla esimerkiksi nähtävyys, aktiviteetti, arkkitehtuurinen kohde, katutaideteos tai hyvä skeittauspaikka. Kohde voi olla myös esimerkiksi viihtyisä paikka puistossa tai paikka, josta aukeaa kiva näkymä. Käyttäjät voivat antaa kohteista lisätietoa kommentoiden sekä omia että muiden luomia kohteita antaen niistä omaan paikkallistuntemukseen perustuvia kommentteja.
 
+Sovellus on tehty alunperin kurssille *Tietokannat ja web-ohjelmointi*, mutta kurssin ehtona ollessa, että vain Pythonin ja Flaskin käyttö oli sallittua, on sovelluksen jatkokehitys jatkunut kurssin jälkeen.
 
 ## Sovelluksen toiminnot
 
@@ -12,10 +13,8 @@ Tämä sovellus on tarkoitettu mielenkiintoisten kaupunkikohteiden listaamisen H
 - Käyttäjä pystyy etsimään tietokohteita hakusanalla sekä kategorian perusteella. Käyttäjä pystyy hakemaan sekä itse lisäämiään että muiden käyttäjien lisäämiä kohteita.
 - Sekä omia että muiden tekemiä kohteita pystyy kommentoimaan. Omia kommentteja pystyy muokkaamaan tai poistamaan.
 - Sovelluksessa on käyttäjäsivut, jotka näyttävät jokaisesta käyttäjästä tilastoja ja käyttäjän lisäämät kohteet.
+- Käyttäjä pystyy näkemään kohteet kartalla.
 
 ## Sovelluksen linkki
 
-
-
-## Käyttöohjeet
-- 
+https://helsinki-spots.onrender.com/
