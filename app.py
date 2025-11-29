@@ -3,6 +3,7 @@ import sqlite3
 import markupsafe
 import math
 import time
+from pyproj import Transformer
 
 from flask import Flask, abort, redirect, render_template
 from flask import request, session, make_response, flash, g
@@ -19,7 +20,6 @@ app.secret_key = config.secret_key
 categories = [
     "Arkkitehtuuri & Rakennustaide",
     "Baarit & Klubit",
-    "Elävän musiikin paikat",
     "Historialliset kohteet",
     "Hylätyt rakennukset",
     "Kahvilat & Pienpaahtimot",
@@ -28,11 +28,27 @@ categories = [
     "Kollektiivit & Yhteisöt",
     "Paikka hyvällä näkymällä",
     "Puistot & Hengailupaikat",
-    "Salaiset & Piilotetut Paikat",
     "Skeittauspaikat",
-    "Tapahtumat",
     "Muut"
 ]
+
+def spot_color(category):
+    # simple map of category -> hex color; adjust colors as you like
+    mapping = {
+        "Arkkitehtuuri & Rakennustaide": "#ce7d32",
+        "Baarit & Klubit": "#c176ff",
+        "Historialliset kohteet": "#CCC057",
+        "Hylätyt rakennukset": "#ff8080",
+        "Kahvilat & Pienpaahtimot": "#5e4936",
+        "Katutaide & Graffiti": "#7ddaff",
+        "Kirppikset": "#a3ff7e",
+        "Kollektiivit & Yhteisöt": "#6B3F88",
+        "Paikka hyvällä näkymällä": "#5c88ff",
+        "Puistot & Hengailupaikat": "#51b83c",
+        "Skeittauspaikat": "#333333",
+        "Muut": "#cccccc"
+    }
+    return mapping.get(category, "#cccccc")  # fallback color
 
 def require_login():
     if "user_id" not in session:
@@ -73,7 +89,11 @@ def index(page=1):
     if page > page_count:
         return redirect("/" + str(page_count))
 
-    all_spots = spots.get_spots(page, page_size)
+    rows = spots.get_spots(page, page_size)
+    # convert rows to dicts and attach color
+    all_spots = [dict(r) for r in rows]
+    for s in all_spots:
+        s["color"] = spot_color(s.get("category", "Muut"))
     return render_template("index.html", page=page,
                            page_count=page_count, spots=all_spots)
 
@@ -97,19 +117,24 @@ def find_spot(page=1):
 
     if results:
         spot_count = results[0]["spot_count"]
-        print(spot_count, "ASDASFASFASFAS")
     else:
         spot_count = 0
+
     page_count = math.ceil(spot_count / page_size)
     page_count = max(page_count, 1)
     print(page_count)
+
+
+    found_spots = [dict(r) for r in results]
+    for s in found_spots:
+        s["color"] = spot_color(s.get("category", "Muut"))
 
     if page < 1:
         return redirect("/find_spot/1")
     if page > page_count:
         return redirect("/find_spot/" + str(page_count))
 
-    return render_template("find_spot.html", query=query, results=results, category=category,
+    return render_template("find_spot.html", query=query, results=found_spots, category=category,
                            categories=categories, page=page, page_size=page_size, page_count=page_count)
 
 @app.route("/spot/<int:spot_id>/<int:page>")
@@ -143,11 +168,8 @@ def show_image(image_id):
     return response
 
 def check_coords(coord):
-    coord = coord.strip().replace(",", ".")  # Convert comma to dot
     try:
         coord_flt = float(coord)
-        if len(coord) > 12:
-            abort(403)
         return coord_flt
     except ValueError:
         return None  # Return None if invalid
@@ -199,9 +221,10 @@ def create_spot():
     if "cancel" in request.form:
         return redirect("/")
     name = request.form["name"]
-    lat = request.form["lat"]
+    lat, lon = request.form["coords"].split(", ")
+    print(lon, "Toimiiko? Itäkoordinaatti")
+    print(lat, "Toimiiko? Pohjoiskoordinaatti")
     lat = check_coords(lat)
-    lon = request.form["lon"]
     lon = check_coords(lon)
     description = request.form["description"]
     category = request.form["category"]
@@ -210,10 +233,10 @@ def create_spot():
 
     if not name or not lat or not lon or not category:
         abort(403)
-    if not 6662022 < lat < 6694637:
+    if not 60.05 < lat < 60.34:
         users.wrong_coords(user_id)
         errors["lat"] = "Pohjoiskoordinaatti on virheellinen"
-    if not 360828 < lon < 410820:
+    if not 24.55 < lon < 25.22:
         users.wrong_coords(user_id)
         errors["lon"] = "Itäkoordinaatti on virheellinen"
     if len(name) > 50 or len(description) > 1000:
@@ -271,9 +294,10 @@ def update_spot():
         abort(403)
 
     name = request.form["name"]
-    lat = request.form["lat"]
+    lat, lon = request.form["coords"].split(", ")
+    print(lon, "Toimiiko? Itäkoordinaatti")
+    print(lat, "Toimiiko? Pohjoiskoordinaatti")
     lat = check_coords(lat)
-    lon = request.form["lon"]
     lon = check_coords(lon)
     description = request.form["description"]
     category = request.form["category"]
@@ -282,12 +306,12 @@ def update_spot():
 
     if not name or not lat or not lon or not category:
         abort(403)
-    if not 6662022 < lat < 6694637:
+    if not 60.05 < lat < 60.34:
         users.wrong_coords(user_id)
-        errors["lat"] = "Pohjoiskoordinaatti on virheellinen"
-    if not 360828 < lon < 410820:
+        errors["coords"] = "Koordinaatti on virheellinen"
+    if not 24.55 < lon < 25.22:
         users.wrong_coords(user_id)
-        errors["lon"] = "Itäkoordinaatti on virheellinen"
+        errors["coords"] = "Koordinaatti on virheellinen"
     if len(name) > 50 or len(description) > 1000:
         abort(403)
     if category not in categories:
@@ -445,3 +469,18 @@ def logout():
         del session["username"]
         del session["csrf_token"]
     return redirect("/")
+
+@app.route("/map", methods=["GET"])
+def map():
+    rows = spots.get_all_spots()
+    all_spots = []
+    for row in rows:
+        s = dict(row)
+        s["color"] = spot_color(s.get("category", "Muut"))
+        all_spots.append(s)
+
+    # debug: print first spot keys to confirm names (remove in production)
+    if all_spots:
+        print("map spot sample keys:", list(all_spots[0].keys()))
+
+    return render_template("map.html", spots=all_spots)

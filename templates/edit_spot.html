@@ -2,6 +2,15 @@
 
 {% block title %}Muokkaa kohdetta{% endblock %}
 
+{% block extra_head %}
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+{% endblock %}
+
 {% block content %}
 {% if images %}
 <form action="/remove_images" method="post" class="image-container">
@@ -45,36 +54,20 @@
     {% endif %}
   </p>
   <p>
-    <label for="lat">Koordinaatit (ETRS-TM35FIN):</label><br />
-    <ul>
-      <li>Hae koordinaatit <a href="https://kartta.paikkatietoikkuna.fi/" target="_blank">Paikkatietoikkunasta</a></li>
-      <li>Pohjoiskoordinaatti on muotoa 6673710,116 </li>
-      <li>Itäkoordinaatti on muotoa 385809,798</li>
-      <li>Koordinaatteja, jotka eivät ole Helsingin (lähi)alueella, ei hyväksytä </li> <br>
-    </ul>
+    <label for="coords">Koordinaatit: Klikkaa kartalta ja liitä kopioidut koordinaatit kenttään</label><br />
+    <div id="form-map"></div>
+    <br>
     <input
       type="text"
-      id="lat"
-      name="lat"
-      pattern="^\s*\d+([,.]\d+)?\s*$"
-      maxlength="12"
+      id="coords"
+      name="coords"
+      pattern="^\d{2}\.\d{5}, \d{2}\.\d{5}$"
+      maxlength="18"
       value="{{ spot.lat }}"
       class="{% if errors.lat %}error{% endif %}"
-      required/> N
-    {% if errors.lat %}
-      <span class="notice">{{ errors.lat }}</span>
-    {% endif %}
-    <br><br>
-    <input
-      type="text"
-      name="lon"
-      pattern="^\s*\d+([,.]\d+)?\s*$"
-      maxlength="12"
-      value="{{ spot.lon }}"
-      class="{% if errors.lon %}error{% endif %}"
-      required/> E
-    {% if errors.lon %}
-      <span class="notice">{{ errors.lon }}</span>
+      required/> &lt-- Liitä koordinaatit tähän
+    {% if errors.coords %}
+      <span class="notice">{{ errors.coords }}</span>
     {% endif %}
   </p>
   </p>
@@ -93,4 +86,40 @@
   <input type="submit" name="cancel" value="Peruuta" formnovalidate/>
   <input type="submit" value="Muokkaa kohdetta" />
 </form>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  var map = L.map ('form-map', {
+    maxBounds: [
+      [59.9, 24.6],
+      [60.4, 25.3]
+    ]
+  }).setView([60.1699, 24.9384], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      noWrap: true,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(window.map);
+
+  // Copy lat/lon to clipboard on click
+  map.on('click', function (e) {
+    const lat = e.latlng.lat.toFixed(5);
+    const lon = e.latlng.lng.toFixed(5);
+    const text = `${lat}, ${lon}`;
+
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            console.log("Copied:", text);
+            // Optional: toast popup or temporary alert
+            L.popup()
+                .setLatLng(e.latlng)
+                .setContent(`Copied to clipboard:<br>${text}`)
+                .openOn(map);
+        })
+        .catch(err => {
+            console.error("Clipboard copy failed", err);
+        });
+  });
+</script>
 {% endblock %}

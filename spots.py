@@ -13,6 +13,21 @@ def add_image(image, spot_id):
     sql = "INSERT INTO images (image, spot_id) VALUES (?, ?)"
     db.execute(sql, [image, spot_id])
 
+def get_all_spots():
+    sql = """SELECT s.id AS spot_id,
+                    s.name,
+                    s.lat,
+                    s.lon,
+                    s.description,
+                    s.category,
+                    u.id AS user_id,
+                    u.username
+            FROM spots s
+            LEFT JOIN users u ON s.user_id = u.id"""
+    result = db.query(sql, [])
+    # Always return a list (possibly empty) and use consistent keys (spot_id, user_id)
+    return result
+
 def get_spots(page, page_size):
     sql = """SELECT s.id AS spot_id,
                     s.name,

@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>{% block title %}{% endblock %}</title>
   <link rel="stylesheet" href="/static/main.css">
   <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;700&display=swap" rel="stylesheet">
-</head>
 
+  {% block extra_head %}{% endblock %}
+</head>
 <body>
   <header>
     <div class="top-row">
-      <a href="/" id="header-link">
+      <div id="title">
         <h1>Helsinki Spots</h1>
-      </a>
+      </div>
       <nav class="top-links">
+
         <div class="left-links">
+          <a href="/find_spot/1">Hae kohteita</a>
+          {% if session.username %}
+            <a href="/add_spot">Lisää uusi kohde</a>
+          {% endif %}
+        </div>
+
+        <div class="middle-links">
+          <a href="/map">Kartta</a>
+          <a href="/">Korttinäkymä</a>
+        </div>
+
+        <div class="right-links">
           {% if session.username %}
             Kirjautunut nimellä <a href="/user/{{ session.user_id }}">{{ session.username }}</a>
             <a href="/logout">Kirjaudu ulos</a>
@@ -23,13 +36,7 @@
             <a href="/register">Rekisteröidy</a>
           {% endif %}
         </div>
-  
-        <div class="right-links">
-          <a href="/find_spot/1">Hae kohteita</a>
-          {% if session.username %}
-            <a href="/add_spot">Lisää uusi kohde</a>
-          {% endif %}
-        </div>
+
       </nav>
     </div>
   </header>
@@ -54,5 +61,7 @@
   <div class="comment-pages">
     {% block comment_pages %}{% endblock %}
   </div>
+
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>

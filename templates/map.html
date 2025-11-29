@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block title %}Kartta{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="map"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  var spots = {{ spots | tojson }}
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof L === 'undefined') {
+      console.error('Leaflet is not loaded');
+      return;
+    }
+
+    window.map = L.map('map').setView([60.1699, 24.9384], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(window.map);
+
+    if (!Array.isArray(spots) || spots.length === 0) {
+      console.warn('No spots to show on map.');
+      return;
+    }
+
+    // create a small SVG pin icon (data-uri) for a given color
+    function makePinIcon(color) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 48" width="36" height="48">
+        <path d="M18 0C10.3 0 4 6.3 4 14c0 10 14 28 14 28s14-18 14-28C32 6.3 25.7 0 18 0z" fill="${color}" stroke="#000" stroke-opacity="0.12"/>
+        <circle cx="18" cy="14" r="5" fill="white" fill-opacity="0.95"/>
+      </svg>`;
+      const url = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+      return L.icon({
+        iconUrl: url,
+        iconSize: [36, 48],
+        iconAnchor: [18, 46],
+        popupAnchor: [0, -44]
+      });
+    }
+
+    spots.forEach(function (spot) {
+      var lat = parseFloat(spot.lat);
+      var lon = parseFloat(spot.lon);
+      if (!isFinite(lat) || !isFinite(lon)) {
+        console.warn('Skipping spot with invalid coords:', spot);
+        return;
+      }
+
+      var color = spot.color || '#3388ff';
+      var icon = makePinIcon(color);
+
+      L.marker([lat, lon], { icon: icon })
+        .addTo(window.map)
+        .bindPopup('<b>' + (spot.name || '') + '</b><br><a target="_blank" rel="noopener noreferrer" href="/spot/' + (spot.spot_id || spot.id) + '/1">Avaa kohde</a>');
+    });
+
+    // ensure Leaflet recalculates size after render
+    setTimeout(function () { if (window.map && window.map.invalidateSize) window.map.invalidateSize(); }, 150);
+  });
+</script>
+{% endblock %}

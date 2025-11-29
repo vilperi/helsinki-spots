@@ -6,7 +6,7 @@
 <div class="spot-list">
   {% for spot in spots %}
     <a href="/spot/{{ spot.spot_id }}/1" class="spot-box-link">
-      <div class="spot-box {% if loop.index0 % 2 == 0 %}even{% else %}odd{% endif %}">
+      <div class="spot-box {% if loop.index0 % 2 == 0 %}even{% else %}odd{% endif %}" style="background: {{ spot.color }};">
         <h3>{{ spot.name }}</h3>
         <figure>
           <img src="/image/{{ spot.image_id }}" alt="{{ spot.name }}">
