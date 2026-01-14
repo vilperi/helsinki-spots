@@ -2,7 +2,10 @@
 
 Tämä sovellus on tarkoitettu mielenkiintoisten kaupunkikohteiden listaamisen Helsingissä. Kohde voi olla esimerkiksi nähtävyys, aktiviteetti, arkkitehtuurinen kohde, katutaideteos tai hyvä skeittauspaikka. Kohde voi olla myös esimerkiksi viihtyisä paikka puistossa tai paikka, josta aukeaa kiva näkymä. Käyttäjät voivat antaa kohteista lisätietoa kommentoiden sekä omia että muiden luomia kohteita antaen niistä omaan paikkallistuntemukseen perustuvia kommentteja.
 
-Sovellus on tehty alunperin kurssille *Tietokannat ja web-ohjelmointi*, mutta kurssin ehtona ollessa, että vain Pythonin ja Flaskin käyttö oli sallittua, on sovelluksen jatkokehitys jatkunut kurssin jälkeen.
+Sovellus on tehty alunperin kurssille *Tietokannat ja web-ohjelmointi*, mutta kurssin ehtona ollessa vain Pythonin ja Flaskin olevan sallittuja, on sovelluksen jatkokehitys jatkunut kurssin jälkeen. 
+
+> [!IMPORTANT]
+> Sovellus on esimerkkitilassa portfoliota varten. Sitä ei ole yhdistetty ulkoiseen tietokantaan (ilmaisten vaihtoehtojen puutteen vuoksi), joten uudet kohteet eivät tallennu.
 
 ## Sovelluksen toiminnot
 
