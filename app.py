@@ -33,7 +33,6 @@ categories = [
 ]
 
 def spot_color(category):
-    # simple map of category -> hex color; adjust colors as you like
     mapping = {
         "Arkkitehtuuri & Rakennustaide": "#ce7d32",
         "Baarit & Klubit": "#c176ff",
@@ -48,7 +47,7 @@ def spot_color(category):
         "Skeittauspaikat": "#333333",
         "Muut": "#cccccc"
     }
-    return mapping.get(category, "#cccccc")  # fallback color
+    return mapping.get(category, "#cccccc")
 
 def require_login():
     if "user_id" not in session:
