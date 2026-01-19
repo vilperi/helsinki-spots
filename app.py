@@ -483,3 +483,14 @@ def map():
         print("map spot sample keys:", list(all_spots[0].keys()))
 
     return render_template("map.html", spots=all_spots)
+
+@app.after_request
+def after_request(response):
+    elapsed_time = round(time.time() - g.start_time, 2)
+    print("elapsed time:", elapsed_time, "s")
+    return response
+
+@app.teardown_appcontext
+def teardown_db(exception=None):
+    """Close database connection when request ends"""
+    db.close_connection(exception)
